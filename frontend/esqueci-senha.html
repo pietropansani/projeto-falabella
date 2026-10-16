@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Esqueci minha senha</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <form class="login-form" id="form-recuperar" action="#" method="post">
+      <h1>Esqueci a senha</h1>
+
+      <p class="descricao">
+        Digite o e-mail da sua conta e enviaremos um link para você criar uma nova senha.
+      </p>
+
+      <div class="input-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+      </div>
+
+      <p class="mensagem-erro" role="alert"></p>
+      <p class="mensagem-sucesso" id="sucesso" role="status"></p>
+
+      <button type="submit">Enviar link</button>
+
+      <p class="register">
+        Lembrou da senha? <a href="index.html">Voltar ao login</a>
+      </p>
+    </form>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

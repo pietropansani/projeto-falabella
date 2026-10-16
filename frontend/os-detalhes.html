@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes da OS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="detalhes">
+  <main class="app-main">
+    <div class="cabecalho"><h1 id="titulo">Detalhes da OS</h1><a class="btn sec" href="os-consulta.html">Voltar à consulta</a></div>
+    <section class="card" id="dados"></section>
+    <section class="card">
+      <h2>Atualizar OS</h2>
+      <div class="form-grid">
+        <div class="input-group"><label for="d-status">Status</label><select id="d-status"></select></div>
+        <div class="input-group"><label for="d-tecnico">Técnico</label><select id="d-tecnico"></select></div>
+        <div class="input-group cheio"><label for="d-obs">Observação</label><textarea id="d-obs" placeholder="Registre o andamento do serviço"></textarea></div>
+      </div>
+      <div class="acoes"><button type="button" id="btn-atualizar">Salvar alterações</button><button type="button" class="sec" id="btn-excluir">Excluir OS</button></div>
+    </section>
+    <section class="card"><h2>Histórico</h2><ul class="historico" id="historico"></ul></section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

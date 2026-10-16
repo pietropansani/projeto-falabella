@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de OS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="cadastro">
+  <main class="app-main">
+    <h1>Nova ordem de serviço</h1>
+    <form class="card" id="form-os" action="#" method="post">
+      <div class="form-grid">
+        <div class="input-group"><label for="cliente">Cliente</label><input type="text" id="cliente" placeholder="Nome do cliente" required></div>
+        <div class="input-group"><label for="telefone">Telefone</label><input type="tel" id="telefone" placeholder="(11) 99999-9999" required></div>
+        <div class="input-group"><label for="equipamento">Equipamento</label><input type="text" id="equipamento" placeholder="Ex.: Notebook Dell" required></div>
+        <div class="input-group"><label for="prioridade">Prioridade</label><select id="prioridade"><option>Baixa</option><option selected>Média</option><option>Alta</option></select></div>
+        <div class="input-group"><label for="tecnico">Técnico responsável</label><select id="tecnico"></select></div>
+        <div class="input-group"><label for="previsao">Previsão de entrega</label><input type="date" id="previsao"></div>
+        <div class="input-group cheio"><label for="problema">Problema relatado</label><textarea id="problema" placeholder="Descreva o defeito ou serviço solicitado" required></textarea></div>
+      </div>
+      <p class="mensagem-erro" role="alert"></p>
+      <div class="acoes"><button type="submit">Salvar OS</button><a class="btn sec" href="os-consulta.html">Cancelar</a></div>
+    </form>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
