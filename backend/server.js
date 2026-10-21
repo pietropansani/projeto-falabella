@@ -1,76 +1,251 @@
-const express = require("express");
-const session = require("express-session");
-const bcrypt = require("bcryptjs");
-const db = require("./db");
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt');
+const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(session({ secret: "troque-este-segredo", resave: false, saveUninitialized: false }));
-app.use(express.static("public"));
 
-const exigeLogin = (req, res, next) =>
-  req.session.userId ? next() : res.status(401).json({ erro: "Não autenticado" });
+app.use(express.static(path.join(__dirname, 'public')));
 
-// --- Autenticação ---
-app.post("/api/cadastro", (req, res) => {
-  const { nome, email, senha } = req.body;
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Conexão com o SQLite
+const db = new sqlite3.Database('./database.db');
+
+db.serialize(async () => {
+  // 1. Tabela de Usuários com campo 'role'
+  db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'usuario'
+    )
+  `);
+
+  // 2. Tabela de Tickets
+  db.run(`
+    CREATE TABLE IF NOT EXISTS tickets (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'Aberto',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+    )
+  `);
+
+  // 3. Admin Padrão Automático
+  const adminEmail = 'admin@sistema.com';
+  db.get(`SELECT * FROM users WHERE email = ?`, [adminEmail], async (err, row) => {
+    if (!row) {
+      const defaultPassword = await bcrypt.hash('admin123', 10);
+      db.run(
+        `INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)`,
+        ['Administrador Principal', adminEmail, defaultPassword, 'admin'],
+        (err) => {
+          if (!err) {
+            console.log('\n=======================================');
+            console.log('ADMIN PADRÃO CRIADO COM SUCESSO!');
+            console.log('E-mail: admin@sistema.com | Senha: admin123');
+            console.log('=======================================\n');
+          }
+        }
+      );
+    }
+  });
+});
+
+// ----------------------------------------------------
+// ROTAS DE AUTENTICAÇÃO
+// ----------------------------------------------------
+
+// Cadastro Público (Cria apenas contas do tipo 'usuario')
+app.post('/api/register', async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Preencha todos os campos obrigatórios.' });
+  }
+
   try {
-    const r = db.prepare("INSERT INTO usuarios (nome,email,senha_hash) VALUES (?,?,?)")
-      .run(nome, email.toLowerCase(), bcrypt.hashSync(senha, 10));
-    req.session.userId = r.lastInsertRowid;
-    res.json({ ok: true });
-  } catch (e) {
-    res.status(409).json({ erro: "Este e-mail já está cadastrado." });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    db.run(
+      `INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'usuario')`,
+      [name, email, hashedPassword],
+      function (err) {
+        if (err) {
+          console.error('Erro no SQLite:', err.message);
+          
+          // Trata especificamente o erro de chave duplicada (e-mail já cadastrado)
+          if (err.message.includes('UNIQUE constraint failed')) {
+            return res.status(400).json({ error: 'Este e-mail já está cadastrado no sistema.' });
+          }
+          
+          return res.status(500).json({ error: 'Erro ao cadastrar usuário no banco de dados.' });
+        }
+        res.status(201).json({ message: 'Usuário cadastrado com sucesso!' });
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ error: 'Erro interno no servidor.' });
   }
 });
 
-app.post("/api/login", (req, res) => {
-  const u = db.prepare("SELECT * FROM usuarios WHERE email = ?").get(req.body.email.toLowerCase());
-  if (!u || !bcrypt.compareSync(req.body.senha, u.senha_hash))
-    return res.status(401).json({ erro: "E-mail ou senha incorretos." });
-  req.session.userId = u.id;
-  res.json({ ok: true, nome: u.nome });
+// Login Comum (Usuário e Técnico)
+app.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+
+  db.get(`SELECT * FROM users WHERE email = ?`, [email], async (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+    }
+
+    const passwordValid = await bcrypt.compare(password, user.password);
+    if (!passwordValid) {
+      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+    }
+
+    res.json({
+      message: 'Login realizado com sucesso!',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  });
 });
 
-app.post("/api/logout", (req, res) => req.session.destroy(() => res.json({ ok: true })));
+// Login Exclusivo de Admin (Acionado pelo modal do Cadeado)
+app.post('/api/admin/login', (req, res) => {
+  const { email, password } = req.body;
 
-// --- Ordens de serviço ---
-app.get("/api/ordens", exigeLogin, (req, res) => {
-  const { q = "", status = "", tecnico = "" } = req.query;
-  res.json(db.prepare(`
-    SELECT o.*, t.nome AS tecnico_nome FROM ordens o
-    LEFT JOIN tecnicos t ON t.id = o.tecnico_id
-    WHERE (o.cliente LIKE @q OR o.equipamento LIKE @q OR CAST(o.id AS TEXT) = @id)
-      AND (@status = '' OR o.status = @status)
-      AND (@tecnico = '' OR o.tecnico_id = @tecnico)
-    ORDER BY o.id DESC`).all({ q: `%${q}%`, id: q.replace("#", ""), status, tecnico }));
+  db.get(`SELECT * FROM users WHERE email = ?`, [email], async (err, user) => {
+    if (err || !user) {
+      return res.status(401).json({ error: 'Credenciais inválidas.' });
+    }
+
+    const passwordValid = await bcrypt.compare(password, user.password);
+    if (!passwordValid) {
+      return res.status(401).json({ error: 'Credenciais inválidas.' });
+    }
+
+    if (user.role !== 'admin') {
+      return res.status(403).json({ error: 'Acesso negado: você não possui permissão de Administrador.' });
+    }
+
+    res.json({
+      message: 'Acesso administrativo concedido!',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  });
 });
 
-app.post("/api/ordens", exigeLogin, (req, res) => {
-  const o = req.body;
-  const r = db.prepare(`INSERT INTO ordens (cliente,telefone,equipamento,problema,prioridade,previsao,tecnico_id)
-    VALUES (?,?,?,?,?,?,?)`).run(o.cliente, o.telefone, o.equipamento, o.problema, o.prioridade, o.previsao || null, o.tecnico || null);
-  db.prepare("INSERT INTO historico (os_id,texto) VALUES (?,?)").run(r.lastInsertRowid, "OS aberta");
-  res.json({ id: r.lastInsertRowid });
+// ----------------------------------------------------
+// ROTAS DE GERENCIAMENTO DE USUÁRIOS (ADMIN)
+// ----------------------------------------------------
+
+app.get('/api/admin/users', (req, res) => {
+  db.all(`SELECT id, name, email, role FROM users`, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Erro ao buscar usuários.' });
+    res.json(rows);
+  });
 });
 
-app.get("/api/ordens/:id", exigeLogin, (req, res) => {
-  const os = db.prepare("SELECT * FROM ordens WHERE id = ?").get(req.params.id);
-  if (!os) return res.status(404).json({ erro: "OS não encontrada" });
-  os.historico = db.prepare("SELECT * FROM historico WHERE os_id = ? ORDER BY id DESC").all(os.id);
-  res.json(os);
+app.put('/api/admin/users/:id/role', (req, res) => {
+  const { role } = req.body;
+  const { id } = req.params;
+
+  if (!['usuario', 'tecnico', 'admin'].includes(role)) {
+    return res.status(400).json({ error: 'Função inválida.' });
+  }
+
+  db.run(`UPDATE users SET role = ? WHERE id = ?`, [role, id], function (err) {
+    if (err) return res.status(500).json({ error: 'Erro ao atualizar função.' });
+    res.json({ message: 'Função atualizada com sucesso!' });
+  });
 });
 
-app.put("/api/ordens/:id", exigeLogin, (req, res) => {
-  const { status, tecnico, obs } = req.body;
-  db.prepare("UPDATE ordens SET status = ?, tecnico_id = ? WHERE id = ?").run(status, tecnico || null, req.params.id);
-  if (obs) db.prepare("INSERT INTO historico (os_id,texto) VALUES (?,?)").run(req.params.id, "Observação: " + obs);
-  res.json({ ok: true });
+app.delete('/api/admin/users/:id', (req, res) => {
+  const { id } = req.params;
+
+  db.run(`DELETE FROM users WHERE id = ?`, [id], function (err) {
+    if (err) return res.status(500).json({ error: 'Erro ao excluir usuário.' });
+    res.json({ message: 'Usuário removido com sucesso!' });
+  });
 });
 
-app.delete("/api/ordens/:id", exigeLogin, (req, res) => {
-  db.prepare("DELETE FROM ordens WHERE id = ?").run(req.params.id);
-  res.json({ ok: true });
+// ----------------------------------------------------
+// ROTAS DE TICKETS
+// ----------------------------------------------------
+
+app.post('/api/tickets', (req, res) => {
+  const { userId, title, description } = req.body;
+
+  if (!userId || !title || !description) {
+    return res.status(400).json({ error: 'Preencha todos os campos do ticket.' });
+  }
+
+  db.run(
+    `INSERT INTO tickets (user_id, title, description) VALUES (?, ?, ?)`,
+    [userId, title, description],
+    function (err) {
+      if (err) return res.status(500).json({ error: 'Erro ao criar ticket.' });
+      res.status(201).json({ message: 'Ticket aberto com sucesso!' });
+    }
+  );
 });
 
-app.listen(3000, () => console.log("http://localhost:3000"));
+app.get('/api/tickets/user/:userId', (req, res) => {
+  const { userId } = req.params;
+
+  db.all(
+    `SELECT * FROM tickets WHERE user_id = ? ORDER BY created_at DESC`,
+    [userId],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: 'Erro ao buscar tickets.' });
+      res.json(rows);
+    }
+  );
+});
+
+app.get('/api/tickets/all', (req, res) => {
+  const query = `
+    SELECT tickets.*, users.name as user_name, users.email as user_email 
+    FROM tickets 
+    JOIN users ON tickets.user_id = users.id 
+    ORDER BY tickets.created_at DESC
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: 'Erro ao buscar chamados.' });
+    res.json(rows);
+  });
+});
+
+app.put('/api/tickets/:id/status', (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+
+  db.run(`UPDATE tickets SET status = ? WHERE id = ?`, [status, id], function (err) {
+    if (err) return res.status(500).json({ error: 'Erro ao atualizar ticket.' });
+    res.json({ message: 'Status do ticket atualizado com sucesso!' });
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Servidor rodando em http://localhost:3000');
+});
