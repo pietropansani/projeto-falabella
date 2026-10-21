@@ -1,4 +1,5 @@
 # Projeto Falabella
 
-># BackEnd
-># FrontEnd 
+> BackEnd
+> FrontEnd
+> Banco de Dados
