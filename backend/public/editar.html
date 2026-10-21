@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordens de Serviço</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">SYNTAX.lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+    <section class="block">
+
+
+ 
+<main class="pagina">
+    <h1>Editar Clientes</h1>
+    <p>Preencha os dados abaixo para realizar a edição</p>
+
+    <section class="block">
+        <form action="inicio.html" method="get" class="formulario">
+            <div class="form-grid">
+                <div class="campo">
+                    <label for="nome">Nome completo</label>
+                    <input type="text" name="Nome" id="nome" placeholder="Digite seu nome" required>
+                </div>
+
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" name="Email" id="email" placeholder="seuemail@exemplo.com" required>
+                </div>
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+                    <input type="password" name="Senha" id="senha" placeholder="Digite sua senha" required>
+                </div>
+
+                <div class="campo">
+                    <label for="idade">Idade</label>
+                    <input type="number" name="Idade" id="idade" min="18" max="99" required>
+                </div>
+
+                <div class="campo">
+                    <label for="data-nascimento">Data de nascimento</label>
+                    <input type="date" name="Data-nascimento" id="data-nascimento" required>
+                </div>
+
+                <div class="campo">
+                    <label for="genero">Gênero</label>
+                    <select name="genero" id="genero">
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
+                    </select>
+                </div>
+                
+            </main>
+
+            <div class="aviso">Atenção: confira seus dados antes de realizar o cadastro.</div>
+
+            <div class="form-acoes">
+                <button type="submit" class="botao botao-preenchido">Cadastrar</button>
+                <a href="inicio.html" class="botao botao-contorno">Cancelar</a>
+            </div>
+        </form>
+    </section>
+
+</body>
+</html>
+    <section class="detalhes-secao">
+        <h1>Detalhes</h1>
+
+    <div class="filtros">
+        <input type="text" placeholder="Pesquisar por cliente, equipamento ou nº da OS...">
+        <select>
+            <option>Todos os status</option>
+            <option>Pendente</option>
+            <option>Em andamento</option>
+            <option>Concluída</option>
+        </select>
+    </div>
+ 
+        <div class="block">
+            <div class="tabela-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Equipamento</th>
+                            <th>Técnico</th>
+                            <th>Prioridade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>João da Silva<br><small style="color: var(--cor-texto-suave);">Telefone: (11) 98368-3022</small></td>
+                            <td>Ar-condicionado - Modelo: Split 12.000 BTUs</td>
+                            <td>Carlos Lima - Responsável pelo serviço</td>
+                            <td><span class="Em andamento">Alta - Prazo: 18/09/2026</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5>Defeito relatado:</h5>Equipamento não está refrigerando adequadamente.
+
+            <h5>Diagnóstico técnico:</h5>Campo para registrar a causa do problema identificado.
+        </div>
+        <div class="block">
+            <div class="tabela-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Equipamento</th>
+                            <th>Técnico</th>
+                            <th>Prioridade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Maria Souza <br><small style="color: var(--cor-texto-suave);">Telefone: (11) 98368-3022</small></td>
+                            <td>Geladeira Modelo: Frost Free</td>
+                            <td>Ana Paula Responsável pelo serviço</td>
+                            <td><span class="Em andamento">Média Prazo: 16/09/2026</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5>Defeito relatado:</h5>A geladeira não está mantendo os alimentos refrigerados adequadamente.
+
+            <h5>Diagnóstico técnico:</h5>Foi identificada uma falha no sistema de refrigeração. O problema foi corrigido após a manutenção.
+        </div>
+        <div class="block">
+            <div class="tabela-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Equipamento</th>
+                            <th>Técnico</th>
+                            <th>Prioridade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Carlos Lima <br><small style="color: var(--cor-texto-suave);">Telefone: (11) 98368-3022</small></td>
+                            <td>Máquina de lavar
+Modelo: Automática 12 kg</td>
+                            <td>Roberto Alves
+Responsável pelo serviço</td>
+                            <td><span class="Em andamento">Alta - Prazo: 18/09/2026</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5>Defeito relatado:</h5>A máquina de lavar não está realizando o ciclo de centrifugação.
+
+            <h5>Diagnóstico técnico:</h5>Aguardando avaliação técnica para identificar a causa do problema e definir o reparo necessário.
+        </div>
+        <div class="block">
+            <div class="tabela-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Equipamento</th>
+                            <th>Técnico</th>
+                            <th>Prioridade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ana Paula<br><small style="color: var(--cor-texto-suave);">Telefone: (11) 94968-4022</small></td>
+                            <td>Ar-condicionado
+Modelo: Split 9.000 BTUs</td>
+                            <td>João Silva
+Responsável pelo serviço</td>
+                            <td><span class="Em andamento">Alta - Prazo: 18/09/2026</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h5>Defeito relatado:</h5>Equipamento não está refrigerando adequadamente.
+
+            <h5>Diagnóstico técnico:</h5>Campo para registrar a causa do problema identificado.
+        </div>
+          
+          <a href="#" class="botao-menu">Atualizar status</a>
+          <a href="#" class="botao-menu">Voltar</a>
+    </section>
+</main>
+
+</body>
+</html>

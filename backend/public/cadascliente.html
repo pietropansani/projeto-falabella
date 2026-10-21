@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Clientes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">SYNTAX.lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pagina">
+    <h1>Cadastro de Clientes</h1>
+    <p>Preencha os dados abaixo para realizar o cadastro.</p>
+
+    <section class="block">
+        <form action="inicio.html" method="get" class="formulario">
+            <div class="form-grid">
+                <div class="campo">
+                    <label for="nome">Nome completo</label>
+                    <input type="text" name="Nome" id="nome" placeholder="Digite seu nome" required>
+                </div>
+
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" name="Email" id="email" placeholder="seuemail@exemplo.com" required>
+                </div>
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+                    <input type="password" name="Senha" id="senha" placeholder="Digite sua senha" required>
+                </div>
+
+                <div class="campo">
+                    <label for="idade">Idade</label>
+                    <input type="number" name="Idade" id="idade" min="18" max="99" required>
+                </div>
+
+                <div class="campo">
+                    <label for="data-nascimento">Data de nascimento</label>
+                    <input type="date" name="Data-nascimento" id="data-nascimento" required>
+                </div>
+
+                <div class="campo">
+                    <label for="genero">Gênero</label>
+                    <select name="genero" id="genero">
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
+                    </select>
+                </div>
+                
+                <div class="campo">
+                    <label for="hora-cadastro">Melhor horário para contato</label>
+                    <input type="time" name="hora-cadastro" id="hora-cadastro">
+                </div>
+
+                <div class="campo">
+                    <label for="data-disponivel">Data disponível para iniciar um projeto</label>
+                    <input type="date" name="Data-disponivel" id="data-disponivel" required>
+                </div>
+            </div>
+
+            <div class="aviso">Atenção: confira seus dados antes de realizar o cadastro.</div>
+
+            <div class="form-acoes">
+                <button type="submit" class="botao botao-preenchido">Cadastrar</button>
+                <a href="inicio.html" class="botao botao-contorno">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Técnicos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="tecnicos">
+  <main class="app-main">
+    <h1>Técnicos</h1>
+    <form class="card" id="form-tecnico" action="#" method="post">
+      <h2>Novo técnico</h2>
+      <div class="form-grid">
+        <div class="input-group"><label for="t-nome">Nome</label><input type="text" id="t-nome" placeholder="Nome completo" required></div>
+        <div class="input-group"><label for="t-esp">Especialidade</label><input type="text" id="t-esp" placeholder="Ex.: Redes, Hardware" required></div>
+        <div class="input-group"><label for="t-tel">Telefone</label><input type="tel" id="t-tel" placeholder="(11) 99999-9999"></div>
+      </div>
+      <p class="mensagem-erro" role="alert"></p>
+      <div class="acoes"><button type="submit">Adicionar técnico</button></div>
+    </form>
+    <section class="grid-tecnicos" id="lista-tecnicos"></section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

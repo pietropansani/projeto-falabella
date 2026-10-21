@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">SYNTAX.lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pagina">
+    <h1>Relatórios</h1>
+    <p>Resumo das informações disponíveis no sistema.</p>
+
+    <div class="cards">
+        <article class="card">
+            <h2>Relatório de OS</h2>
+            <p>Veja as ordens de serviço cadastradas.</p>
+        </article>
+        <article class="card">
+            <h2>Relatório de Técnicos</h2>
+            <p>Consulte técnicos e quantidade de OS atribuídas.</p>
+        </article>
+        <article class="card">
+            <h2>Relatório de Clientes</h2>
+            <p>Consulte clientes e suas ordens de serviço.</p>
+        </article>
+        <article class="card">
+            <h2>Resumo do sistema</h2>
+            <p>Total de OS, clientes e técnicos.</p>
+        </article>
+    </div>
+
+    <section class="block">
+        <h2>Resumo de Ordens de Serviço</h2>
+        <div class="tabela-wrapper">
+            <table>
+                <thead>
+                    <tr><th>Status</th><th>Quantidade</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><span class="andamento">Em andamento</span></td><td>4</td></tr>
+                    <tr><td><span class="concluida">Concluída</span></td><td>5</td></tr>
+                    <tr><td><span class="pendente">Pendente</span></td><td>3</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

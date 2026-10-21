@@ -1,43 +1,66 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tela de Login</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNTAX.lab — Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
-<body>
-  <main class="container">
-    <form class="login-form" id="form-login" action="#" method="post">
-      <h1>Login</h1>
+<body class="pagina-login">
+    <main class="login-container">
+        <div class="login-cabecalho">
+            <h1>SYNTAX.LAB</h1>
+            <p>Cadastre-se para participar de projetos e oportunidades na área de desenvolvimento de sistemas.</p>
+        </div>
 
-      <div class="input-group">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
-      </div>
+        <section class="login-card">
 
-      <div class="input-group">
-        <label for="senha">Senha</label>
-        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
-      </div>
 
-      <div class="options">
-        <label class="remember">
-          <input type="checkbox" name="lembrar"> Lembrar de mim
-        </label>
-        <a href="esqueci-senha.html">Esqueci a senha</a>
-      </div>
 
-      <p class="mensagem-erro" role="alert"></p>
+            <h2>Informações pessoais</h2>
+            <br>
 
-      <button type="submit">Entrar</button>
+            <form action="inicio.html" method="get" class="formulario">
+                <div class="campo">
+                    <label for="nome">Nome completo</label>
+                    <input type="text" name="Nome" id="nome" placeholder="Digite seu nome" required>
+                </div>
 
-      <p class="register">
-        Não tem uma conta? <a href="cadastro.html">Registre-se</a>
-      </p>
-    </form>
-  </main>
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" name="Email" id="email" placeholder="seuemail@exemplo.com" required>
+                </div>
 
-  <script src="script.js"></script>
-</body>
-</html>
+                <div class="campo">
+                    <label for="senha">Senha</label>
+                    <input type="password" name="Senha" id="senha" placeholder="Digite sua senha" required>
+                </div>
+
+                <div class="campo">
+                    <label for="idade">Idade</label>
+                    <input type="number" name="Idade" id="idade" min="18" max="99" required>
+                </div>
+
+                <div class="campo">
+                    <label for="data-nascimento">Data de nascimento</label>
+                    <input type="date" name="Data-nascimento" id="data-nascimento" required>
+                </div>
+
+                <div class="campo">
+                    <label for="genero">Gênero</label>
+                    <select name="genero" id="genero">
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
+                    </select>
+                </div>
+
+                <div class="form-acoes">
+                    <button type="submit" class="entrar">Entrar</button>
+                </div>
+            </form>
+        </section>
+    </main>
