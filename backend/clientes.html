@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview.png?v=2">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">SYNTAX.lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pagina">
+    <h1>Clientes</h1>
+    <p>Cadastre e gerencie os clientes do sistema.</p>
+    <button type="button" class="botao-menu" id="abrirModalCadastroCliente">+ Cadastrar Cliente</button>
+
+    <section class="block">
+        <div class="secao-titulo"><h2>Registros</h2></div>
+        <div class="tabela-wrapper">
+            <table>
+                <thead><tr><th>Nome</th><th>Telefone</th><th>E-mail</th><th>OS atribuídas</th><th>Ações</th></tr></thead>
+                <tbody id="listaClientes">
+                    <tr><td colspan="5">Carregando clientes...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p id="feedbackClientes" role="status" aria-live="polite"></p>
+    </section>
+</main>
+
+<dialog class="modal-cadastro" id="modalCadastroCliente" aria-labelledby="tituloCadastroCliente">
+    <div class="modal-cabecalho">
+        <div>
+            <h2 id="tituloCadastroCliente">Cadastrar cliente</h2>
+            <p>Informe os dados do cliente.</p>
+        </div>
+        <button type="button" class="modal-fechar" id="fecharModalCadastroCliente">Fechar</button>
+    </div>
+
+    <form id="formCadastroCliente" class="formulario">
+        <div class="campo">
+            <label for="novoClienteNome">Nome completo</label>
+            <input type="text" id="novoClienteNome" name="nome" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="novoClienteTelefone">Telefone</label>
+            <input type="tel" id="novoClienteTelefone" name="telefone" maxlength="40">
+        </div>
+        <div class="campo">
+            <label for="novoClienteEmail">E-mail</label>
+            <input type="email" id="novoClienteEmail" name="email" maxlength="254">
+        </div>
+        <p class="cadastro-feedback" id="erroCadastroCliente" role="status" aria-live="polite"></p>
+        <div class="form-acoes">
+            <button type="submit" class="entrar">Cadastrar</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog class="modal-cadastro" id="modalEditarCliente" aria-labelledby="tituloEditarCliente">
+    <div class="modal-cabecalho">
+        <div>
+            <h2 id="tituloEditarCliente">Editar cliente</h2>
+            <p id="identificacaoCliente"></p>
+        </div>
+        <button type="button" class="modal-fechar" id="fecharModalCliente">Fechar</button>
+    </div>
+
+    <form id="formEditarCliente" class="formulario">
+        <div class="campo">
+            <label for="clienteNome">Nome</label>
+            <input type="text" id="clienteNome" name="nome" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="clienteTelefone">Telefone</label>
+            <input type="tel" id="clienteTelefone" name="telefone" maxlength="40">
+        </div>
+        <div class="campo">
+            <label for="clienteEmail">E-mail</label>
+            <input type="email" id="clienteEmail" name="email" maxlength="254">
+        </div>
+        <p class="cadastro-feedback" id="erroEditarCliente" role="status" aria-live="polite"></p>
+        <div class="form-acoes">
+            <button type="button" class="botao-excluir" id="excluirCliente">Excluir cliente</button>
+            <button type="submit" class="entrar">Salvar alterações</button>
+        </div>
+    </form>
+</dialog>
+
+<script>
+    const listaClientes = document.getElementById('listaClientes');
+    const feedbackClientes = document.getElementById('feedbackClientes');
+    const botaoAbrirCadastroCliente = document.getElementById('abrirModalCadastroCliente');
+    const modalCadastroCliente = document.getElementById('modalCadastroCliente');
+    const formCadastroCliente = document.getElementById('formCadastroCliente');
+    const modalEditarCliente = document.getElementById('modalEditarCliente');
+    const formEditarCliente = document.getElementById('formEditarCliente');
+    let clienteEmEdicao = null;
+    let botaoEdicaoAtivo = null;
+
+    function adicionarCelula(linha, valor) {
+        const celula = document.createElement('td');
+        celula.textContent = valor === null || valor === undefined || valor === ''
+            ? '-'
+            : String(valor);
+        linha.append(celula);
+    }
+
+    async function cadastrarCliente(evento) {
+        evento.preventDefault();
+        const botaoCadastrar = formCadastroCliente.querySelector('[type="submit"]');
+        const erro = document.getElementById('erroCadastroCliente');
+        erro.textContent = '';
+        botaoCadastrar.disabled = true;
+
+        try {
+            const resposta = await fetch('/api/clientes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(new FormData(formCadastroCliente)))
+            });
+            const resultado = await resposta.json();
+            if (!resposta.ok) {
+                throw new Error(resultado.erro || 'Não foi possível cadastrar o cliente.');
+            }
+
+            modalCadastroCliente.close();
+            formCadastroCliente.reset();
+            await carregarClientes();
+            feedbackClientes.textContent = 'Cliente cadastrado com sucesso.';
+        } catch (erroCadastro) {
+            erro.textContent = erroCadastro.message;
+        } finally {
+            botaoCadastrar.disabled = false;
+        }
+    }
+
+    async function carregarClientes() {
+        try {
+            const resposta = await fetch('/api/clientes');
+            const clientes = await resposta.json();
+            if (!resposta.ok) {
+                throw new Error(clientes.erro || 'Não foi possível carregar os clientes.');
+            }
+
+            listaClientes.replaceChildren();
+            if (!clientes.length) {
+                const linha = document.createElement('tr');
+                const celula = document.createElement('td');
+                celula.colSpan = 5;
+                celula.textContent = 'Nenhum cliente cadastrado.';
+                linha.append(celula);
+                listaClientes.append(linha);
+                return;
+            }
+
+            clientes.forEach((cliente) => {
+                const linha = document.createElement('tr');
+                adicionarCelula(linha, cliente.nome);
+                adicionarCelula(linha, cliente.telefone);
+                adicionarCelula(linha, cliente.email);
+                adicionarCelula(linha, cliente.os_atribuidas);
+
+                const celulaAcoes = document.createElement('td');
+                const botaoEditar = document.createElement('button');
+                botaoEditar.type = 'button';
+                botaoEditar.className = 'botao-menu';
+                botaoEditar.textContent = 'Editar';
+                botaoEditar.addEventListener('click', () => abrirEdicaoCliente(cliente, botaoEditar));
+                celulaAcoes.append(botaoEditar);
+                linha.append(celulaAcoes);
+                listaClientes.append(linha);
+            });
+        } catch (erro) {
+            feedbackClientes.textContent = erro.message;
+        }
+    }
+
+    function abrirEdicaoCliente(cliente, botao) {
+        clienteEmEdicao = cliente.id_cliente;
+        botaoEdicaoAtivo = botao;
+        document.getElementById('identificacaoCliente').textContent = cliente.nome;
+        document.getElementById('erroEditarCliente').textContent = '';
+        document.getElementById('clienteNome').value = cliente.nome || '';
+        document.getElementById('clienteTelefone').value = cliente.telefone || '';
+        document.getElementById('clienteEmail').value = cliente.email || '';
+        modalEditarCliente.showModal();
+    }
+
+    formEditarCliente.addEventListener('submit', async (evento) => {
+        evento.preventDefault();
+        const botaoSalvar = formEditarCliente.querySelector('[type="submit"]');
+        const erro = document.getElementById('erroEditarCliente');
+        erro.textContent = '';
+        botaoSalvar.disabled = true;
+
+        try {
+            const resposta = await fetch(`/api/clientes/${clienteEmEdicao}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(new FormData(formEditarCliente)))
+            });
+            const resultado = await resposta.json();
+            if (!resposta.ok) {
+                throw new Error(resultado.erro || 'Não foi possível atualizar o cliente.');
+            }
+
+            modalEditarCliente.close();
+            await carregarClientes();
+            feedbackClientes.textContent = 'Cliente atualizado com sucesso.';
+        } catch (erroAtualizacao) {
+            erro.textContent = erroAtualizacao.message;
+        } finally {
+            botaoSalvar.disabled = false;
+        }
+    });
+
+    document.getElementById('excluirCliente').addEventListener('click', async (evento) => {
+        if (!window.confirm(`Deseja excluir o cliente ${document.getElementById('identificacaoCliente').textContent}?`)) {
+            return;
+        }
+
+        const botaoExcluir = evento.currentTarget;
+        const erro = document.getElementById('erroEditarCliente');
+        erro.textContent = '';
+        botaoExcluir.disabled = true;
+
+        try {
+            const resposta = await fetch(`/api/clientes/${clienteEmEdicao}`, {
+                method: 'DELETE'
+            });
+            const resultado = await resposta.json();
+            if (!resposta.ok) {
+                throw new Error(resultado.erro || 'Não foi possível excluir o cliente.');
+            }
+
+            modalEditarCliente.close();
+            botaoEdicaoAtivo = null;
+            clienteEmEdicao = null;
+            await carregarClientes();
+            feedbackClientes.textContent = 'Cliente excluído com sucesso.';
+        } catch (erroExclusao) {
+            erro.textContent = erroExclusao.message;
+        } finally {
+            botaoExcluir.disabled = false;
+        }
+    });
+
+    document.getElementById('fecharModalCliente').addEventListener('click', () => modalEditarCliente.close());
+    botaoAbrirCadastroCliente.addEventListener('click', () => {
+        document.getElementById('erroCadastroCliente').textContent = '';
+        modalCadastroCliente.showModal();
+        document.getElementById('novoClienteNome').focus();
+    });
+    document.getElementById('fecharModalCadastroCliente').addEventListener('click', () => modalCadastroCliente.close());
+    formCadastroCliente.addEventListener('submit', cadastrarCliente);
+    modalCadastroCliente.addEventListener('click', (evento) => {
+        if (evento.target === modalCadastroCliente) modalCadastroCliente.close();
+    });
+    modalCadastroCliente.addEventListener('close', () => botaoAbrirCadastroCliente.focus());
+    modalEditarCliente.addEventListener('click', (evento) => {
+        if (evento.target === modalEditarCliente) modalEditarCliente.close();
+    });
+    modalEditarCliente.addEventListener('close', () => botaoEdicaoAtivo?.focus());
+    carregarClientes();
+</script>
+
+</body>
+</html>

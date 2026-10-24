@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Técnicos</title>
+    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview.png?v=2">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">SYNTAX.lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pagina">
+    <h1>Cadastro de Técnicos</h1>
+    <p>Preencha os dados abaixo para realizar o cadastro.</p>
+
+    <section class="block">
+        <form onsubmit="cadastrarTecnico(event)" class="formulario">
+            <div class="form-grid">
+                <div class="campo">
+                    <label for="nome">Nome completo</label>
+                    <input type="text" id="nome" placeholder="Digite seu nome" required>
+                </div>
+
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seuemail@exemplo.com" required>
+                </div>
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" placeholder="Digite sua senha" required>
+                </div>
+
+                <div class="campo">
+                    <label for="idade">Idade</label>
+                    <input type="number" id="idade" min="18" max="99" required>
+                </div>
+
+                <div class="campo">
+                    <label for="data-nascimento">Data de nascimento</label>
+                    <input type="date" id="data-nascimento" required>
+                </div>
+
+                <div class="campo">
+                    <label for="genero">Gênero</label>
+                    <select id="genero">
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="nivel">Nível de conhecimento</label>
+                    <select id="nivel">
+                        <option value="JÚNIOR">Júnior</option>
+                        <option value="PLENO">Pleno</option>
+                        <option value="SÊNIOR">Sênior</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="bio">Fale sobre sua experiência</label>
+                    <textarea id="bio" placeholder="Conte um pouco sobre sua experiência..."></textarea>
+                </div>
+
+                <div class="campo">
+                    <label for="horario">Melhor horário para contato</label>
+                    <input type="time" id="horario">
+                </div>
+
+                <div class="campo">
+                    <label for="data-disponivel">Data disponível para iniciar</label>
+                    <input type="date" id="data-disponivel" required>
+                </div>
+            </div>
+
+            <div class="aviso">
+                Atenção: confira seus dados antes de realizar o cadastro.
+            </div>
+
+            <div class="form-acoes">
+                <button type="submit" class="botao botao-preenchido">Cadastrar</button>
+                <a href="inicio.html" class="botao botao-contorno">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
+
+<script>
+    async function cadastrarTecnico(evento) {
+        evento.preventDefault();
+
+        const dados = {
+            nome: document.getElementById('nome').value,
+            email: document.getElementById('email').value,
+            senha: document.getElementById('senha').value,
+            idade: document.getElementById('idade').value,
+            data_nascimento: document.getElementById('data-nascimento').value,
+            genero: document.getElementById('genero').value,
+            nivel: document.getElementById('nivel').value,
+            bio: document.getElementById('bio').value,
+            horario_contato: document.getElementById('horario').value,
+            data_disponivel: document.getElementById('data-disponivel').value
+        };
+
+        const resposta = await fetch('/api/tecnicos/cadastro', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dados)
+        });
+
+        const resultado = await resposta.json();
+
+        if (resposta.ok) {
+            alert('Técnico cadastrado com sucesso!');
+            window.location.href = 'inicio.html';
+        } else {
+            alert(resultado.erro);
+        }
+    }
+</script>
+
+</body>
+</html>

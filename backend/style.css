@@ -1,0 +1,980 @@
+/* =========================================================
+   SYNTAX.lab — ESTILO PRINCIPAL
+   Tema: preto e cinza, minimalista
+   ========================================================= */
+
+:root {
+    color-scheme: dark;
+
+    /* Superfícies */
+    --cor-fundo: #0b0b0c;
+    --cor-menu: #070707;
+    --cor-branco: #141415;        /* cartões e blocos */
+    --cor-elevado: #1c1c1e;       /* cabeçalhos de tabela, hover */
+    --cor-campo: #0f0f10;         /* campos de formulário */
+
+    /* Texto */
+    --cor-texto: #ededed;
+    --cor-texto-suave: #8f9195;
+
+    /* Ação principal: cinza claro sobre preto */
+    --cor-primaria: #e6e6e6;
+    --cor-primaria-escura: #ffffff;
+    --cor-primaria-texto: #0b0b0c;
+
+    /* Linhas */
+    --cor-linha: #2a2a2d;
+    --cor-linha-forte: #3d3d41;
+
+    /* Status: tudo em tons de cinza */
+    --cor-sucesso: #ededed;
+    --cor-sucesso-fundo: #2e2e31;
+    --cor-andamento: #cfcfd2;
+    --cor-andamento-fundo: #232325;
+    --cor-pendente: #8f9195;
+    --cor-pendente-fundo: #181819;
+
+    --cor-perigo: #d4d4d6;
+
+    --raio: 10px;
+    --transicao: 0.2s ease;
+}
+
+/* =========================
+   RESET
+   ========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: "Work Sans", "Poppins", Arial, sans-serif;
+    color: var(--cor-texto);
+    background: var(--cor-fundo);
+    line-height: 1.6;
+    margin-left: 250px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.detalhes-secao {
+    margin-top: 48px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+p {
+    color: var(--cor-texto-suave);
+}
+
+::selection {
+    background: #e6e6e6;
+    color: #0b0b0c;
+}
+
+/* =========================
+   MENU LATERAL
+   ========================= */
+
+.topo {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 250px;
+    height: 100vh;
+    padding: 24px 16px;
+    background: var(--cor-menu);
+    color: var(--cor-texto);
+    border-right: 1px solid var(--cor-linha);
+    z-index: 1000;
+}
+
+.topo-conteudo {
+    width: 100%;
+    height: 100%;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 10px 0;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--cor-texto);
+}
+
+/* Logo da equipe no menu (fundo transparente) */
+.marca::before {
+    content: "";
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    background: url("IMG/logo-removebg-preview.png") center / contain no-repeat;
+}
+
+.menu > p {
+    padding: 4px 10px 26px;
+    color: var(--cor-texto-suave);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.5;
+}
+
+.menu > a:not(.marca) {
+    display: block;
+    padding: 11px 14px;
+    border-radius: 8px;
+    border-left: 2px solid transparent;
+    color: var(--cor-texto-suave);
+    font-size: 14px;
+    transition: background var(--transicao), color var(--transicao), border-color var(--transicao);
+}
+
+.menu > a:not(.marca):hover {
+    background: var(--cor-elevado);
+    color: var(--cor-texto);
+    border-left-color: var(--cor-texto);
+}
+
+/* =========================
+   CONTEÚDO
+   ========================= */
+
+main,
+.pagina {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 48px 44px;
+}
+
+h5 {
+    margin-top: 18px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cor-texto-suave);
+    background-color: var(--cor-elevado);
+    border-radius: 6px;
+}
+
+h4 {
+    font-size: small;
+}
+
+.hero {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 44px 20px;
+}
+
+.hero-texto {
+    width: 100%;
+}
+
+.hero h1,
+.hero h2,
+.pagina > h1 {
+    margin-bottom: 8px;
+    font-size: clamp(28px, 4vw, 40px);
+    color: var(--cor-texto);
+}
+
+.hero p,
+.pagina > p {
+    margin-bottom: 24px;
+    font-size: 16px;
+}
+
+.secao-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 32px 0 12px;
+}
+
+.secao-titulo h2,
+.secao-titulo h3 {
+    color: var(--cor-texto);
+    font-size: 18px;
+}
+
+/* =========================
+   BOTÕES
+   ========================= */
+
+.botao,
+.botao-menu,
+.entrar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: transform var(--transicao), background var(--transicao), border-color var(--transicao), color var(--transicao);
+}
+
+.botao {
+    padding: 11px 18px;
+}
+
+.botao:hover,
+.botao-menu:hover,
+.entrar:hover {
+    transform: translateY(-1px);
+}
+
+.botao-menu {
+    padding: 10px 16px;
+    background: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+}
+
+.botao-menu:hover {
+    background: var(--cor-primaria-escura);
+}
+
+.botao-preenchido {
+    background: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+}
+
+.botao-preenchido:hover {
+    background: var(--cor-primaria-escura);
+}
+
+.botao-contorno {
+    background: transparent;
+    border-color: var(--cor-linha-forte);
+    color: var(--cor-texto);
+}
+
+.botao-contorno:hover {
+    border-color: var(--cor-texto);
+}
+
+.botao-claro {
+    background: var(--cor-elevado);
+    color: var(--cor-texto);
+}
+
+/* Botões dentro de tabelas ficam mais discretos */
+td .botao-menu {
+    padding: 6px 12px;
+    background: transparent;
+    border-color: var(--cor-linha-forte);
+    color: var(--cor-texto);
+    font-size: 12px;
+}
+
+td .botao-menu:hover {
+    background: var(--cor-primaria);
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+}
+
+/* =========================
+   CARDS DE RESUMO
+   ========================= */
+
+.cards-resumo {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin: 25px 0 32px;
+}
+
+.card1,
+.card2,
+.card3,
+.card4 {
+    min-height: 150px;
+    padding: 22px;
+    border-radius: var(--raio);
+    border: 1px solid var(--cor-linha);
+    color: var(--cor-texto);
+    transition: transform var(--transicao), border-color var(--transicao);
+}
+
+/* Degradê sutil de cinzas, do mais escuro ao mais claro */
+.card1 { background: #121213; }
+.card2 { background: #171718; }
+.card3 { background: #1c1c1e; }
+.card4 { background: #212123; }
+
+.card1:hover,
+.card2:hover,
+.card3:hover,
+.card4:hover {
+    transform: translateY(-3px);
+    border-color: var(--cor-linha-forte);
+}
+
+.card1 h2,
+.card2 h2,
+.card3 h2,
+.card4 h2 {
+    margin-bottom: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cor-texto-suave);
+}
+
+.card1 h3,
+.card2 h3,
+.card3 h3,
+.card4 h3,
+.card1 h4,
+.card2 h4,
+.card3 h4,
+.card4 h4 {
+    margin-bottom: 10px;
+    font-size: 38px;
+    font-weight: 600;
+}
+
+.card1 a,
+.card2 a,
+.card3 a,
+.card4 a {
+    display: inline-block;
+    color: var(--cor-texto-suave);
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color var(--transicao);
+}
+
+.card1 a:hover,
+.card2 a:hover,
+.card3 a:hover,
+.card4 a:hover {
+    color: var(--cor-texto);
+}
+
+/* =========================
+   CARDS DE RELATÓRIOS
+   ========================= */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+    margin-top: 25px;
+}
+
+.card {
+    padding: 22px;
+    min-height: 145px;
+    background: var(--cor-branco);
+    border: 1px solid var(--cor-linha);
+    border-radius: var(--raio);
+    text-align: center;
+    transition: transform var(--transicao), border-color var(--transicao);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    border-color: var(--cor-linha-forte);
+}
+
+.card h2 {
+    margin-bottom: 10px;
+    color: var(--cor-texto);
+    font-size: 17px;
+}
+
+.card p {
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+/* =========================
+   BLOCO
+   ========================= */
+
+.block {
+    width: 100%;
+    margin: 20px 0;
+    padding: 24px;
+    background: var(--cor-branco);
+    border: 1px solid var(--cor-linha);
+    border-radius: var(--raio);
+}
+
+.block h2,
+.block h3 {
+    margin-bottom: 16px;
+}
+
+/* =========================
+   TABELAS
+   ========================= */
+
+.tabela-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+    background: transparent;
+    overflow: hidden;
+}
+
+th {
+    padding: 12px 13px;
+    background: var(--cor-elevado);
+    color: var(--cor-texto-suave);
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 14px 13px;
+    border-bottom: 1px solid var(--cor-linha);
+    color: var(--cor-texto);
+    font-size: 14px;
+}
+
+tr:last-child td {
+    border-bottom: 0;
+}
+
+tr:hover td {
+    background: #19191a;
+}
+
+/* =========================
+   STATUS (tons de cinza)
+   ========================= */
+
+.andamento,
+.concluida,
+.pendente {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 11px;
+    border: 1px solid var(--cor-linha-forte);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.andamento::before,
+.concluida::before,
+.pendente::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.andamento {
+    background: var(--cor-andamento-fundo);
+    color: var(--cor-andamento);
+}
+
+/* Concluída: preenchido e claro, o destaque do conjunto */
+.concluida {
+    background: var(--cor-sucesso-fundo);
+    color: var(--cor-sucesso);
+}
+
+/* Pendente: apagado e vazado */
+.pendente {
+    background: var(--cor-pendente-fundo);
+    color: var(--cor-pendente);
+    border-style: dashed;
+}
+
+/* =========================
+   PESQUISA E FILTROS
+   ========================= */
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 22px 0;
+}
+
+.filtros input,
+.filtros select,
+.pesquisa input,
+.pesquisa select {
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 1px solid var(--cor-linha);
+    border-radius: 8px;
+    background: var(--cor-campo);
+    color: var(--cor-texto);
+    outline: none;
+    transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+.filtros input {
+    flex: 1 1 320px;
+}
+
+.filtros input:focus,
+.filtros select:focus {
+    border-color: var(--cor-texto-suave);
+    box-shadow: 0 0 0 3px rgba(237, 237, 237, 0.08);
+}
+
+/* =========================
+   FORMULÁRIOS
+   ========================= */
+
+.formulario {
+    display: grid;
+    gap: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.campo label {
+    color: var(--cor-texto-suave);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--cor-linha);
+    border-radius: 8px;
+    background: var(--cor-campo);
+    color: var(--cor-texto);
+    outline: none;
+    transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder,
+.filtros input::placeholder {
+    color: #5c5e62;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    border-color: var(--cor-texto-suave);
+    box-shadow: 0 0 0 3px rgba(237, 237, 237, 0.08);
+}
+
+.campo textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.form-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 5px;
+}
+
+.aviso {
+    padding: 12px 15px;
+    border-radius: 8px;
+    background: var(--cor-elevado);
+    border: 1px solid var(--cor-linha);
+    border-left: 3px solid var(--cor-texto-suave);
+    color: var(--cor-texto-suave);
+    font-size: 14px;
+}
+
+/* =========================
+   LOGIN
+   ========================= */
+
+.pagina-login {
+    min-height: 100vh;
+    margin-left: 0;
+    display: grid;
+    place-items: center;
+    padding: 30px 18px;
+    background:
+        radial-gradient(ellipse at 50% 0%, #1a1a1c 0%, transparent 60%),
+        var(--cor-fundo);
+}
+
+.login-container {
+    width: min(100%, 420px);
+}
+
+.login-cabecalho {
+    margin-bottom: 26px;
+    text-align: center;
+}
+
+/* Logo da equipe na tela de login */
+.login-cabecalho::before {
+    content: "";
+    display: block;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 14px;
+    background: url("IMG/logo-removebg-preview.png") center / contain no-repeat;
+}
+
+.login-cabecalho h1 {
+    margin-bottom: 8px;
+    color: var(--cor-texto);
+    font-size: 30px;
+    letter-spacing: 0.04em;
+}
+
+.login-cabecalho p {
+    max-width: none;
+    font-size: 15px;
+}
+
+.login-card {
+    padding: 28px;
+    background: var(--cor-branco);
+    border: 1px solid var(--cor-linha);
+    border-radius: 14px;
+}
+
+.login-card h2 {
+    margin-bottom: 18px;
+    font-size: 18px;
+}
+
+.login-card .formulario {
+    gap: 14px;
+}
+
+.login-card .campo {
+    gap: 5px;
+}
+
+.login-card .campo input,
+.login-card .campo select {
+    padding: 10px 12px;
+}
+
+.login-card .form-acoes {
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.login-card .link-senha,
+.login-card .login-cadastro button {
+    color: var(--cor-texto-suave);
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color var(--transicao);
+}
+
+.login-card .link-senha:hover,
+.login-card .login-cadastro button:hover {
+    color: var(--cor-texto);
+}
+
+.login-card .login-cadastro {
+    margin-top: 0;
+    font-size: 13px;
+}
+
+.login-card .login-cadastro button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+}
+
+.login-feedback {
+    min-height: 1.4em;
+    color: var(--cor-perigo);
+    font-size: 13px;
+}
+
+.entrar {
+    padding: 11px 20px;
+    background: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
+}
+
+.entrar:hover {
+    background: var(--cor-primaria-escura);
+}
+
+/* =========================
+   MODAIS
+   ========================= */
+
+.modal-cadastro {
+    width: min(430px, calc(100% - 32px));
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 26px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--cor-linha-forte);
+    border-radius: 12px;
+    background: var(--cor-branco);
+    color: var(--cor-texto);
+}
+
+.modal-cadastro::backdrop {
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(3px);
+}
+
+.modal-cadastro .modal-cabecalho {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.modal-cadastro h2 {
+    margin-bottom: 5px;
+    color: var(--cor-texto);
+    font-size: 20px;
+}
+
+.modal-cadastro .modal-cabecalho p,
+.modal-cadastro .cadastro-feedback {
+    font-size: 14px;
+}
+
+.modal-cadastro .modal-fechar {
+    flex: 0 0 auto;
+    padding: 4px 10px;
+    border: 1px solid var(--cor-linha-forte);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--cor-texto-suave);
+    font-size: 13px;
+    cursor: pointer;
+    transition: color var(--transicao), border-color var(--transicao);
+}
+
+.modal-cadastro .modal-fechar:hover {
+    color: var(--cor-texto);
+    border-color: var(--cor-texto);
+}
+
+.modal-cadastro .formulario {
+    gap: 14px;
+}
+
+.modal-cadastro .campo input {
+    min-height: 42px;
+}
+
+.modal-cadastro .cadastro-feedback {
+    min-height: 1.4em;
+    color: var(--cor-perigo);
+}
+
+.modal-cadastro .entrar:disabled {
+    cursor: wait;
+    opacity: 0.55;
+}
+
+/* Excluir: contorno cinza, fica sólido só ao passar o mouse */
+.botao-excluir {
+    min-height: 38px;
+    padding: 10px 14px;
+    border: 1px solid var(--cor-linha-forte);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--cor-texto-suave);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background var(--transicao), color var(--transicao), border-color var(--transicao);
+}
+
+.botao-excluir:hover {
+    background: var(--cor-texto);
+    border-color: var(--cor-texto);
+    color: var(--cor-primaria-texto);
+}
+
+.botao-excluir:disabled {
+    cursor: wait;
+    opacity: 0.55;
+}
+
+/* =========================
+   RESPONSIVIDADE
+   ========================= */
+
+@media (max-width: 1000px) {
+    body {
+        margin-left: 0;
+    }
+
+    .topo {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 14px;
+        border-right: 0;
+        border-bottom: 1px solid var(--cor-linha);
+    }
+
+    .menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .menu > p {
+        display: none;
+    }
+
+    .menu > a:not(.marca) {
+        padding: 9px 11px;
+        border-left: 0;
+    }
+
+    .marca {
+        margin-right: auto;
+    }
+
+    .hero,
+    main,
+    .pagina {
+        padding: 30px 22px;
+    }
+
+    .cards-resumo,
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .hero,
+    main,
+    .pagina {
+        padding: 24px 15px;
+    }
+
+    .menu {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .marca {
+        margin-right: 0;
+    }
+
+    .menu > a:not(.marca) {
+        width: 100%;
+    }
+
+    .cards-resumo,
+    .cards,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filtros {
+        flex-direction: column;
+    }
+
+    .filtros input,
+    .filtros select,
+    .botao-menu {
+        width: 100%;
+    }
+
+    td .botao-menu {
+        width: auto;
+    }
+
+    .form-acoes .botao,
+    .form-acoes .entrar {
+        width: 100%;
+    }
+
+    .login-card {
+        padding: 20px;
+    }
+}

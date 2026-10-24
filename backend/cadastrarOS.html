@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Ordem de Serviço</title>
+    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview.png?v=2">
+</head>
+<body>
+    <template id="cadastro-os-template">
+        <div class="modal-cabecalho">
+            <div>
+                <h2 id="titulo-os">Nova Ordem de Serviço</h2>
+                <p>Informe os dados para abrir uma ordem.</p>
+            </div>
+            <button type="button" class="modal-fechar" data-fechar-os aria-label="Fechar janela">Fechar</button>
+        </div>
+
+        <form id="formNovaOS" class="formulario">
+            <div class="campo">
+                <label for="osCliente">Cliente</label>
+                <input type="text" id="osCliente" name="cliente" maxlength="120" placeholder="Nome do cliente" required>
+            </div>
+
+            <div class="campo">
+                <label for="osEquipamento">Equipamento</label>
+                <input type="text" id="osEquipamento" name="equipamento" maxlength="120" placeholder="Ex.: Ar-condicionado" required>
+            </div>
+
+            <div class="campo">
+                <label for="osTecnico">Técnico responsável</label>
+                <select id="osTecnico" name="id_tecnico" required>
+                    <option value="">Carregando técnicos...</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="osData">Data da solicitação</label>
+                <input type="date" id="osData" name="data_os" required>
+            </div>
+
+            <div class="campo">
+                <label for="osEmergencia">Nível de emergência</label>
+                <select id="osEmergencia" name="nivel_emergencia" required>
+                    <option value="" disabled selected>Selecione o nível</option>
+                    <option value="Baixo">Baixo</option>
+                    <option value="Médio">Médio</option>
+                    <option value="Grave">Grave</option>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="osDescricao">Descrição do problema</label>
+                <textarea id="osDescricao" name="descricao_problema" maxlength="1000" placeholder="Descreva o problema relatado" required></textarea>
+            </div>
+
+            <p class="cadastro-feedback" id="osFeedback" role="status" aria-live="polite"></p>
+
+            <div class="form-acoes">
+                <button type="submit" class="entrar">Criar OS</button>
+            </div>
+        </form>
+    </template>
+</body>
+</html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordens de Serviço</title>
+    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview.png?v=2">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,11 +26,12 @@
         </nav>
     </div>
 </header>
+<main class="pagina">
 
     <section class="block">
 
 
- 
+
 <main class="pagina">
     <h1>Editar Clientes</h1>
     <p>Preencha os dados abaixo para realizar a edição</p>
@@ -70,7 +72,7 @@
                         <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
                     </select>
                 </div>
-                
+
             </main>
 
             <div class="aviso">Atenção: confira seus dados antes de realizar o cadastro.</div>
@@ -87,16 +89,11 @@
     <section class="detalhes-secao">
         <h1>Detalhes</h1>
 
-    <div class="filtros">
-        <input type="text" placeholder="Pesquisar por cliente, equipamento ou nº da OS...">
-        <select>
-            <option>Todos os status</option>
-            <option>Pendente</option>
-            <option>Em andamento</option>
-            <option>Concluída</option>
-        </select>
-    </div>
- 
+        <div class="filtros">
+            <input type="text" placeholder="Pesquisar por cliente, equipamento ou nº da OS...">
+            <span class="andamento">Em andamento</span>
+        </div>
+
         <div class="block">
             <div class="tabela-wrapper">
                 <table>
@@ -201,7 +198,7 @@ Responsável pelo serviço</td>
 
             <h5>Diagnóstico técnico:</h5>Campo para registrar a causa do problema identificado.
         </div>
-          
+
           <a href="#" class="botao-menu">Atualizar status</a>
           <a href="#" class="botao-menu">Voltar</a>
     </section>
