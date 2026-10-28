@@ -1,40 +1,41 @@
 /* =========================================================
    SYNTAX.lab — ESTILO PRINCIPAL
-   Tema: preto e cinza, minimalista
+   Tema: azul e claro (paleta da Júlia)
    ========================================================= */
 
 :root {
-    color-scheme: dark;
+    color-scheme: light;
 
     /* Superfícies */
-    --cor-fundo: #0b0b0c;
-    --cor-menu: #070707;
-    --cor-branco: #141415;        /* cartões e blocos */
-    --cor-elevado: #1c1c1e;       /* cabeçalhos de tabela, hover */
-    --cor-campo: #0f0f10;         /* campos de formulário */
+    --cor-fundo: #eef3f8;
+    --cor-menu: #083966;
+    --cor-branco: #ffffff;        /* cartões e blocos */
+    --cor-elevado: #e8eef4;       /* cabeçalhos de tabela, hover */
+    --cor-campo: #ffffff;         /* campos de formulário */
 
     /* Texto */
-    --cor-texto: #ededed;
-    --cor-texto-suave: #8f9195;
+    --cor-texto: #243746;
+    --cor-texto-suave: #64748b;
 
-    /* Ação principal: cinza claro sobre preto */
-    --cor-primaria: #e6e6e6;
-    --cor-primaria-escura: #ffffff;
-    --cor-primaria-texto: #0b0b0c;
+    /* Ação principal: azul */
+    --cor-primaria: #1794c5;
+    --cor-primaria-escura: #0b6f99;
+    --cor-primaria-texto: #ffffff;
 
     /* Linhas */
-    --cor-linha: #2a2a2d;
-    --cor-linha-forte: #3d3d41;
+    --cor-linha: #e5e7eb;
+    --cor-linha-forte: #d5dce3;
 
-    /* Status: tudo em tons de cinza */
-    --cor-sucesso: #ededed;
-    --cor-sucesso-fundo: #2e2e31;
-    --cor-andamento: #cfcfd2;
-    --cor-andamento-fundo: #232325;
-    --cor-pendente: #8f9195;
-    --cor-pendente-fundo: #181819;
+    /* Status */
+    --cor-sucesso: #168653;
+    --cor-sucesso-fundo: #d5f5e3;
+    --cor-andamento: #b77900;
+    --cor-andamento-fundo: #fff0c2;
+    --cor-pendente: #475569;
+    --cor-pendente-fundo: #e2e8f0;
 
-    --cor-perigo: #d4d4d6;
+    --cor-perigo: #dc3545;
+    --cor-perigo-fundo: #fde2e5;
 
     --raio: 10px;
     --transicao: 0.2s ease;
@@ -99,8 +100,8 @@ p {
 }
 
 ::selection {
-    background: #e6e6e6;
-    color: #0b0b0c;
+    background: #1794c5;
+    color: #ffffff;
 }
 
 /* =========================
@@ -114,8 +115,8 @@ p {
     height: 100vh;
     padding: 24px 16px;
     background: var(--cor-menu);
-    color: var(--cor-texto);
-    border-right: 1px solid var(--cor-linha);
+    color: #ffffff;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
     z-index: 1000;
 }
 
@@ -138,7 +139,7 @@ p {
     font-size: 19px;
     font-weight: 600;
     letter-spacing: 0.02em;
-    color: var(--cor-texto);
+    color: #ffffff;
 }
 
 /* Logo da equipe no menu (fundo transparente) */
@@ -152,7 +153,7 @@ p {
 
 .menu > p {
     padding: 4px 10px 26px;
-    color: var(--cor-texto-suave);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -164,15 +165,15 @@ p {
     padding: 11px 14px;
     border-radius: 8px;
     border-left: 2px solid transparent;
-    color: var(--cor-texto-suave);
+    color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
     transition: background var(--transicao), color var(--transicao), border-color var(--transicao);
 }
 
 .menu > a:not(.marca):hover {
-    background: var(--cor-elevado);
-    color: var(--cor-texto);
-    border-left-color: var(--cor-texto);
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-left-color: #ffffff;
 }
 
 /* =========================
@@ -194,8 +195,8 @@ h5 {
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--cor-texto-suave);
-    background-color: var(--cor-elevado);
+    color: var(--cor-texto);
+    background-color: #f5d8db;
     border-radius: 6px;
 }
 
@@ -292,17 +293,18 @@ h4 {
 
 .botao-contorno {
     background: transparent;
-    border-color: var(--cor-linha-forte);
-    color: var(--cor-texto);
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria);
 }
 
 .botao-contorno:hover {
-    border-color: var(--cor-texto);
+    background: var(--cor-primaria);
+    color: var(--cor-primaria-texto);
 }
 
 .botao-claro {
-    background: var(--cor-elevado);
-    color: var(--cor-texto);
+    background: #e7f5fb;
+    color: var(--cor-primaria-escura);
 }
 
 /* Botões dentro de tabelas ficam mais discretos */
@@ -338,23 +340,23 @@ td .botao-menu:hover {
     min-height: 150px;
     padding: 22px;
     border-radius: var(--raio);
-    border: 1px solid var(--cor-linha);
-    color: var(--cor-texto);
+    border: 1px solid transparent;
+    color: #ffffff;
     transition: transform var(--transicao), border-color var(--transicao);
 }
 
-/* Degradê sutil de cinzas, do mais escuro ao mais claro */
-.card1 { background: #121213; }
-.card2 { background: #171718; }
-.card3 { background: #1c1c1e; }
-.card4 { background: #212123; }
+/* Cores dos cards de resumo */
+.card1 { background: #554aec; }
+.card2 { background: #35b86b; }
+.card3 { background: #e0b93b; color: #243746; }
+.card4 { background: #e23d4f; }
 
 .card1:hover,
 .card2:hover,
 .card3:hover,
 .card4:hover {
     transform: translateY(-3px);
-    border-color: var(--cor-linha-forte);
+    border-color: transparent;
 }
 
 .card1 h2,
@@ -366,7 +368,8 @@ td .botao-menu:hover {
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--cor-texto-suave);
+    color: inherit;
+    opacity: 0.9;
 }
 
 .card1 h3,
@@ -387,7 +390,7 @@ td .botao-menu:hover {
 .card3 a,
 .card4 a {
     display: inline-block;
-    color: var(--cor-texto-suave);
+    color: inherit;
     font-size: 13px;
     text-decoration: underline;
     text-underline-offset: 3px;
@@ -398,7 +401,8 @@ td .botao-menu:hover {
 .card2 a:hover,
 .card3 a:hover,
 .card4 a:hover {
-    color: var(--cor-texto);
+    color: inherit;
+    opacity: 0.8;
 }
 
 /* =========================
@@ -497,7 +501,7 @@ tr:last-child td {
 }
 
 tr:hover td {
-    background: #19191a;
+    background: #f8fafc;
 }
 
 /* =========================
@@ -576,8 +580,8 @@ tr:hover td {
 
 .filtros input:focus,
 .filtros select:focus {
-    border-color: var(--cor-texto-suave);
-    box-shadow: 0 0 0 3px rgba(237, 237, 237, 0.08);
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(23, 148, 197, 0.12);
 }
 
 /* =========================
@@ -625,14 +629,14 @@ tr:hover td {
 .campo input::placeholder,
 .campo textarea::placeholder,
 .filtros input::placeholder {
-    color: #5c5e62;
+    color: #94a3b8;
 }
 
 .campo input:focus,
 .campo select:focus,
 .campo textarea:focus {
-    border-color: var(--cor-texto-suave);
-    box-shadow: 0 0 0 3px rgba(237, 237, 237, 0.08);
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 0 3px rgba(23, 148, 197, 0.12);
 }
 
 .campo textarea {
@@ -650,10 +654,10 @@ tr:hover td {
 .aviso {
     padding: 12px 15px;
     border-radius: 8px;
-    background: var(--cor-elevado);
-    border: 1px solid var(--cor-linha);
-    border-left: 3px solid var(--cor-texto-suave);
-    color: var(--cor-texto-suave);
+    background: #fff8df;
+    border: 1px solid #f1df9d;
+    border-left: 3px solid #e0b93b;
+    color: #755b00;
     font-size: 14px;
 }
 
@@ -667,9 +671,7 @@ tr:hover td {
     display: grid;
     place-items: center;
     padding: 30px 18px;
-    background:
-        radial-gradient(ellipse at 50% 0%, #1a1a1c 0%, transparent 60%),
-        var(--cor-fundo);
+    background: linear-gradient(135deg, #eef6fb, #e7edff);
 }
 
 .login-container {
@@ -693,7 +695,7 @@ tr:hover td {
 
 .login-cabecalho h1 {
     margin-bottom: 8px;
-    color: var(--cor-texto);
+    color: var(--cor-menu);
     font-size: 30px;
     letter-spacing: 0.04em;
 }
@@ -736,7 +738,7 @@ tr:hover td {
 
 .login-card .link-senha,
 .login-card .login-cadastro button {
-    color: var(--cor-texto-suave);
+    color: var(--cor-primaria-escura);
     font-size: 13px;
     text-decoration: underline;
     text-underline-offset: 3px;
@@ -745,7 +747,7 @@ tr:hover td {
 
 .login-card .link-senha:hover,
 .login-card .login-cadastro button:hover {
-    color: var(--cor-texto);
+    color: var(--cor-primaria);
 }
 
 .login-card .login-cadastro {
@@ -790,14 +792,14 @@ tr:hover td {
     padding: 26px;
     overflow-y: auto;
     overscroll-behavior: contain;
-    border: 1px solid var(--cor-linha-forte);
+    border: 1px solid var(--cor-linha);
     border-radius: 12px;
     background: var(--cor-branco);
     color: var(--cor-texto);
 }
 
 .modal-cadastro::backdrop {
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(8, 32, 50, 0.58);
     backdrop-filter: blur(3px);
 }
 
@@ -825,8 +827,8 @@ tr:hover td {
     padding: 4px 10px;
     border: 1px solid var(--cor-linha-forte);
     border-radius: 6px;
-    background: transparent;
-    color: var(--cor-texto-suave);
+    background: #ffffff;
+    color: var(--cor-texto);
     font-size: 13px;
     cursor: pointer;
     transition: color var(--transicao), border-color var(--transicao);
@@ -870,9 +872,9 @@ tr:hover td {
 }
 
 .botao-excluir:hover {
-    background: var(--cor-texto);
-    border-color: var(--cor-texto);
-    color: var(--cor-primaria-texto);
+    background: var(--cor-perigo);
+    border-color: var(--cor-perigo);
+    color: #ffffff;
 }
 
 .botao-excluir:disabled {
@@ -895,7 +897,7 @@ tr:hover td {
         height: auto;
         padding: 14px;
         border-right: 0;
-        border-bottom: 1px solid var(--cor-linha);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .menu {
@@ -977,4 +979,253 @@ tr:hover td {
     .login-card {
         padding: 20px;
     }
+}
+
+/* ==========================================
+PÁGINA SOBRE NÓS
+========================================== */
+/* FONTE PADRÃO DO SITE */
+* {
+font-family: 'Poppins', sans-serif !important;
+}
+.sobre-nos h1,
+.sobre-nos h2,
+.sobre-nos p,
+.sobre-nos span,
+.sobre-nos strong {
+font-family: 'Poppins', sans-serif;
+}
+.sobre-nos {
+width: 100%;
+max-width: 1180px;
+margin: 0 auto;
+padding: 10px 0 35px;
+}
+
+.cabecalho-sobre {
+display: grid;
+grid-template-columns: minmax(0, 1.6fr) minmax(220px, 0.8fr);
+align-items: center;
+gap: 32px;
+margin-bottom: 35px;
+}
+
+.apresentacao-sobre {
+min-width: 0;
+}
+
+.etiqueta-sobre {
+display: inline-block;
+margin-bottom: 14px;
+padding: 6px 11px;
+border-radius: 5px;
+background: #e8f1f7;
+color: #285b7b;
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 1px;
+}
+
+.apresentacao-sobre h1 {
+margin: 0 0 18px;
+color: #243746;
+font-family: "Fraunces", Georgia, serif;
+font-size: clamp(32px, 4vw, 46px);
+font-weight: 700;
+line-height: 1.2;
+}
+
+.apresentacao-sobre h1 span {
+color: #1794c5;
+}
+
+.apresentacao-sobre p {
+max-width: 760px;
+margin: 0;
+color: #64748b;
+font-size: 15px;
+line-height: 1.8;
+}
+
+.frase-sobre {
+display: flex;
+align-items: center;
+justify-content: center;
+min-height: 180px;
+padding: 28px;
+border-radius: 12px;
+background: #e8f1f7;
+border-left: 5px solid #1794c5;
+}
+
+.frase-sobre p {
+margin: 0;
+color: #243746;
+font-family: "Fraunces", Georgia, serif;
+font-size: clamp(22px, 2.4vw, 29px);
+font-weight: 600;
+line-height: 1.4;
+text-align: center;
+}
+
+/* ==========================================
+CARTÕES DOS INTEGRANTES
+========================================== */
+
+.equipe {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 22px;
+margin: 0 0 38px;
+}
+
+.card-integrante {
+display: flex;
+align-items: center;
+gap: 22px;
+min-width: 0;
+padding: 24px;
+border: 1px solid #e1e7ec;
+border-radius: 12px;
+background: #ffffff;
+box-shadow: 0 2px 6px rgba(36, 55, 70, 0.04);
+transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card-integrante:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 18px rgba(36, 55, 70, 0.12);
+}
+
+.card-integrante > img {
+flex: 0 0 112px;
+width: 112px;
+height: 112px;
+margin: 0;
+border: 3px solid #edf2f5;
+border-radius: 50%;
+object-fit: cover;
+object-position: center;
+}
+
+.informacoes-integrante {
+flex: 1;
+min-width: 0;
+}
+
+.informacoes-integrante h2 {
+margin: 0 0 8px;
+color: #243746;
+font-family: "Fraunces", Georgia, serif;
+font-size: 21px;
+line-height: 1.3;
+}
+
+.cargo {
+display: inline-block;
+margin-bottom: 10px;
+padding: 4px 9px;
+border-radius: 4px;
+background: #edf3f7;
+color: #285b7b;
+font-size: 11px;
+font-weight: 600;
+}
+
+.informacoes-integrante p {
+margin: 0 0 13px;
+color: #64748b;
+font-size: 13px;
+line-height: 1.7;
+}
+
+.tecnologias {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+gap: 6px;
+color: #3c5263;
+font-size: 11px;
+font-weight: 600;
+}
+
+.tecnologias span {
+color: #9aa8b3;
+}
+
+/* ==========================================
+   CORREÇÃO FINAL — TODOS OS BOTÕES AZUIS
+   ========================================== */
+
+button,
+a.botao,
+a.botao-menu,
+a.botao-preenchido,
+a.botao-contorno,
+a.botao-claro,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.botao,
+.botao-menu,
+.botao-preenchido,
+.botao-contorno,
+.botao-claro,
+.entrar {
+    background: #1794c5 !important;
+    background-color: #1794c5 !important;
+    color: #ffffff !important;
+    border-color: #1794c5 !important;
+    box-shadow: none;
+}
+
+/* Continuam azuis ao passar o mouse */
+button:hover,
+a.botao:hover,
+a.botao-menu:hover,
+a.botao-preenchido:hover,
+a.botao-contorno:hover,
+a.botao-claro:hover,
+input[type="button"]:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+.botao:hover,
+.botao-menu:hover,
+.botao-preenchido:hover,
+.botao-contorno:hover,
+.botao-claro:hover,
+.entrar:hover {
+    background: #1794c5 !important;
+    background-color: #1794c5 !important;
+    color: #ffffff !important;
+    border-color: #1794c5 !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Mantém os botões azuis quando estão desabilitados */
+button:disabled,
+input[type="button"]:disabled,
+input[type="submit"]:disabled {
+    background: #1794c5 !important;
+    background-color: #1794c5 !important;
+    color: #ffffff !important;
+    opacity: 0.7;
+}
+
+/* ==========================================
+REDUZ OS MOVIMENTOS PARA QUEM PREFERE
+UMA INTERFACE MAIS DISCRETA
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+.card-integrante,
+.tecnologia-item {
+transition: none;
+}
+
+.card-integrante:hover,
+.tecnologia-item:hover {
+transform: none;
+}
 }
