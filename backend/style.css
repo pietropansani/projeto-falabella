@@ -23,8 +23,9 @@
     --cor-primaria-texto: #ffffff;
 
     /* Linhas */
-    --cor-linha: #e5e7eb;
-    --cor-linha-forte: #d5dce3;
+    --cor-linha: #8da2b5;
+    --cor-linha-forte: #5f7a92;
+    --borda-grossura: 2px;
 
     /* Status */
     --cor-sucesso: #168653;
@@ -1228,4 +1229,83 @@ transition: none;
 .tecnologia-item:hover {
 transform: none;
 }
+}
+/* ==========================================
+   BORDAS MAIS ESCURAS E GROSSAS
+   Melhora a visualização dos containers/caixas
+   em todas as páginas que usam este CSS
+   ========================================== */
+
+.card,
+.block,
+.card-integrante,
+.login-card,
+.modal-cadastro,
+.frase-sobre,
+.aviso,
+.filtros input,
+.filtros select,
+.pesquisa input,
+.pesquisa select,
+.campo input,
+.campo select,
+.campo textarea,
+.modal-cadastro .modal-fechar,
+.botao-excluir {
+    border-width: var(--borda-grossura);
+    border-style: solid;
+    border-color: var(--cor-linha);
+}
+
+.card:hover,
+.card-integrante:hover {
+    border-color: var(--cor-linha-forte);
+}
+
+.card-integrante > img {
+    border: 3px solid var(--cor-linha);
+}
+
+.frase-sobre {
+    border-left: 5px solid #1794c5;
+}
+
+.aviso {
+    border-color: #d4b94a;
+    border-left: 4px solid #e0b93b;
+}
+
+/* Campos em foco continuam azuis */
+.filtros input:focus,
+.filtros select:focus,
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    border-color: var(--cor-primaria);
+}
+
+/* Tabelas: linhas divisórias mais visíveis */
+td {
+    border-bottom: var(--borda-grossura) solid var(--cor-linha);
+}
+
+tr:last-child td {
+    border-bottom: 0;
+}
+
+th {
+    border-bottom: var(--borda-grossura) solid var(--cor-linha-forte);
+}
+
+.tabela-wrapper {
+    border: var(--borda-grossura) solid var(--cor-linha);
+    border-radius: var(--raio);
+}
+
+/* Etiquetas de status */
+.andamento,
+.concluida,
+.pendente {
+    border-width: var(--borda-grossura);
+    border-color: currentColor;
 }
