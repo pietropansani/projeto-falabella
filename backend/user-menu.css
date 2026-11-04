@@ -1,0 +1,672 @@
+/* ==========================================================================
+   MENU DE USUÁRIO MINIMALISTA & COMPACTO (SYNTAX LAB)
+   Versão reduzida, elegante, sem barras de rolagem e com foco nas ações essenciais
+   ========================================================================== */
+
+:root {
+    --um-bg-card: rgba(17, 24, 39, 0.98);
+    --um-bg-hover: rgba(255, 255, 255, 0.06);
+    --um-border: rgba(255, 255, 255, 0.1);
+    --um-text-main: #f8fafc;
+    --um-text-muted: #94a3b8;
+    --um-text-dim: #64748b;
+    --um-primary: #0ea5e9;
+    --um-primary-gradient: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+    --um-success: #10b981;
+    --um-danger: #ef4444;
+    --um-danger-bg: rgba(239, 68, 68, 0.12);
+    --um-radius-card: 16px;
+    --um-radius-item: 10px;
+    --um-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    --um-font: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ==========================================================================
+   TRIGGER / GATILHO COMPACTO NO TOPO DIREITO
+   ========================================================================== */
+
+.user-menu-wrapper {
+    position: relative;
+    display: inline-block;
+    font-family: var(--um-font);
+    z-index: 1050;
+}
+
+.user-menu-fixed-top {
+    position: fixed;
+    top: 14px;
+    right: 20px;
+    z-index: 1100;
+}
+
+.user-trigger-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 4px 11px 4px 5px;
+    background: rgba(17, 24, 39, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    color: var(--um-text-main);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+    outline: none;
+    user-select: none;
+}
+
+.user-trigger-btn:hover {
+    background: rgba(17, 24, 39, 1);
+    border-color: rgba(14, 165, 233, 0.45);
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.2);
+}
+
+.user-trigger-btn.active {
+    border-color: var(--um-primary);
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.25);
+}
+
+.user-trigger-avatar-box {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.user-trigger-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    background: #1e293b;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-status-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 9px;
+    height: 9px;
+    background: var(--um-success);
+    border: 1.5px solid #0f172a;
+    border-radius: 50%;
+}
+
+.user-trigger-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    line-height: 1.15;
+}
+
+.user-trigger-name {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--um-text-main);
+}
+
+.user-trigger-role {
+    font-size: 10px;
+    color: var(--um-text-muted);
+}
+
+.user-trigger-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--um-text-muted);
+    transition: transform 0.2s ease;
+}
+
+.user-trigger-btn.active .user-trigger-chevron {
+    transform: rotate(180deg);
+    color: var(--um-primary);
+}
+
+/* ==========================================================================
+   DROPDOWN MENU / CARD (TAMANHO MENOR & MINIMALISTA)
+   ========================================================================== */
+
+.user-dropdown-card {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 275px; /* Tamanho menor e mais compacto */
+    background: var(--um-bg-card);
+    border: 1px solid var(--um-border);
+    border-radius: var(--um-radius-card);
+    box-shadow: var(--um-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    animation: userMenuShowCompact 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform-origin: top right;
+    z-index: 1200;
+}
+
+.user-dropdown-card.show {
+    display: flex;
+}
+
+@keyframes userMenuShowCompact {
+    0% {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.97);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ==========================================================================
+   CABEÇALHO DO PERFIL (COMPACTO)
+   ========================================================================== */
+
+.user-card-header {
+    position: relative;
+    padding: 16px 14px 14px;
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.3) 100%);
+    border-bottom: 1px solid var(--um-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.user-header-avatar-wrap {
+    position: relative;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 8px;
+}
+
+.user-header-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #1e293b;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.35);
+}
+
+.user-header-badge {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 12px;
+    height: 12px;
+    background: var(--um-success);
+    border: 2px solid #111827;
+    border-radius: 50%;
+}
+
+.user-header-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--um-text-main);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 2px;
+}
+
+.user-verified-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--um-primary);
+}
+
+.user-header-email-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    max-width: 100%;
+}
+
+.user-header-email-row:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.user-header-email {
+    font-size: 11px;
+    color: var(--um-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-header-copy-icon {
+    width: 11px;
+    height: 11px;
+    color: var(--um-text-dim);
+    flex-shrink: 0;
+}
+
+.btn-manage-account {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 7px 14px;
+    background: var(--um-primary-gradient);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(14, 165, 233, 0.3);
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.btn-manage-account[hidden] {
+    display: none;
+}
+
+.btn-manage-account:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+.btn-manage-account svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ==========================================================================
+   ALTERNAR PERFIL RÁPIDO (SEM QUALQUER BARRA DE ROLAGEM)
+   ========================================================================== */
+
+.user-menu-section-label {
+    padding: 10px 14px 6px;
+    font-size: 9.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--um-text-dim);
+}
+
+/* Grid/Flex compacto para os perfis, sem rolagem horizontal ou vertical */
+.user-quick-profiles {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 14px 10px;
+    gap: 6px;
+    overflow: hidden !important; /* Zero scrollbar */
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+.user-quick-profiles::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.quick-profile-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    padding: 4px;
+    border-radius: 8px;
+    color: var(--um-text-muted);
+    font-size: 10.5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    outline: none;
+    flex: 1;
+}
+
+.quick-profile-pill:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.quick-profile-pill.active {
+    color: var(--um-primary);
+    font-weight: 600;
+}
+
+.quick-profile-thumb {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.quick-profile-pill:hover .quick-profile-thumb {
+    transform: scale(1.08);
+}
+
+.quick-profile-pill.active .quick-profile-thumb {
+    border-color: var(--um-primary);
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.35);
+}
+
+/* ==========================================================================
+   LISTA DE ITENS RESTANTES (ADICIONAR PERFIL E SAIR)
+   ========================================================================== */
+
+.user-menu-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 2px 12px;
+}
+
+.user-menu-body {
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--um-radius-item);
+    color: var(--um-text-main);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    outline: none;
+}
+
+.user-menu-item:hover {
+    background: var(--um-bg-hover);
+}
+
+.user-item-icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #cbd5e1;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.user-menu-item:hover .user-item-icon-box {
+    background: rgba(14, 165, 233, 0.15);
+    color: var(--um-primary);
+}
+
+.user-item-icon-box svg {
+    width: 15px;
+    height: 15px;
+}
+
+.user-item-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.user-item-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #f1f5f9;
+}
+
+.user-item-arrow {
+    width: 12px;
+    height: 12px;
+    color: var(--um-text-dim);
+    transition: transform 0.15s ease;
+    opacity: 0.5;
+}
+
+.user-menu-item:hover .user-item-arrow {
+    opacity: 1;
+    transform: translateX(2px);
+}
+
+/* Item de Logout / Sair */
+.user-menu-item.danger:hover {
+    background: var(--um-danger-bg);
+}
+
+.user-menu-item.danger:hover .user-item-icon-box {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}
+
+.user-menu-item.danger:hover .user-item-title {
+    color: #fca5a5;
+}
+
+.user-menu-item.danger:hover .user-item-arrow {
+    color: #f87171;
+}
+
+/* ==========================================================================
+   MODAIS INTERATIVOS (COMPACTOS)
+   ========================================================================== */
+
+.um-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.um-modal-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.um-modal-card {
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 380px; /* Mais compacto */
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    transform: scale(0.96) translateY(6px);
+    transition: transform 0.2s ease;
+    font-family: var(--um-font);
+    color: #f3f4f6;
+}
+
+.um-modal-backdrop.open .um-modal-card {
+    transform: scale(1) translateY(0);
+}
+
+.um-modal-header {
+    padding: 14px 18px;
+    background: #1f2937;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.um-modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.um-modal-close {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 18px;
+    line-height: 1;
+    transition: color 0.15s;
+}
+
+.um-modal-close:hover {
+    color: #ffffff;
+}
+
+.um-modal-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.um-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.um-form-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #cbd5e1;
+}
+
+.um-form-input {
+    padding: 8px 12px;
+    background: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: #f8fafc;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.um-form-input:focus {
+    border-color: var(--um-primary);
+}
+
+.um-modal-footer {
+    padding: 12px 18px;
+    background: rgba(15, 23, 42, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.um-btn-secondary {
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e5e7eb;
+    border-radius: 8px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.um-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.um-btn-primary {
+    padding: 7px 16px;
+    background: var(--um-primary-gradient);
+    border: none;
+    color: #ffffff;
+    font-weight: 500;
+    border-radius: 8px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: filter 0.15s;
+}
+
+.um-btn-primary:hover {
+    filter: brightness(1.1);
+}
+
+.um-btn-danger {
+    padding: 7px 16px;
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    border: none;
+    color: #ffffff;
+    font-weight: 500;
+    border-radius: 8px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: filter 0.15s;
+}
+
+.um-btn-danger:hover {
+    filter: brightness(1.1);
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATION FLUTUANTE
+   ========================================================================== */
+
+.um-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 16px;
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    color: #f8fafc;
+    font-size: 12.5px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 3000;
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: all 0.25s ease;
+    font-family: var(--um-font);
+}
+
+.um-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}

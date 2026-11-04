@@ -26,6 +26,9 @@ const sqlite3 = require('sqlite3').verbose();
 // a senha pura no banco).
 const bcrypt = require('bcryptjs');
 
+// Tokens aleatórios para as sessões autenticadas.
+const crypto = require('crypto');
+
 // path: monta caminhos de arquivos de forma compatível com
 // Windows, Linux e Mac.
 const path = require('path');
@@ -273,6 +276,42 @@ const rota = (funcao) => (req, res, next) => {
         .catch(next);
 };
 
+const sessoes = new Map();
+const duracaoSessaoMs = 8 * 60 * 60 * 1000;
+
+function exigirSessao(req, res, next) {
+    const cookie = req.headers.cookie || '';
+    const correspondencia = cookie.match(/(?:^|;\s*)syntaxlab_session=([a-f0-9]{64})(?:;|$)/);
+    const sessao = correspondencia && sessoes.get(correspondencia[1]);
+
+    if (!sessao || sessao.expiraEm <= Date.now()) {
+        if (correspondencia) sessoes.delete(correspondencia[1]);
+        return next(erroHttp(401, 'Faça login para continuar.'));
+    }
+
+    req.idUsuarioSessao = sessao.idUsuario;
+    req.tokenSessao = correspondencia[1];
+    next();
+}
+
+function iniciarSessao(usuario, res) {
+    const agora = Date.now();
+
+    for (const [token, sessao] of sessoes) {
+        if (sessao.expiraEm <= agora) sessoes.delete(token);
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    sessoes.set(token, {
+        idUsuario: usuario.id_usuario,
+        expiraEm: agora + duracaoSessaoMs
+    });
+    res.setHeader(
+        'Set-Cookie',
+        `syntaxlab_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=${duracaoSessaoMs / 1000}`
+    );
+}
+
 // =========================================================
 // PREPARAÇÃO DO BANCO (criação e atualização de tabelas)
 // =========================================================
@@ -328,7 +367,8 @@ async function prepararBanco() {
         rm: 'TEXT',
         idade: 'INTEGER',
         data_nascimento: 'TEXT',
-        genero: 'TEXT'
+        genero: 'TEXT',
+        cargo: "TEXT NOT NULL DEFAULT 'Cliente'"
     });
 
     // Índice único no RM, ignorando maiúsculas/minúsculas.
@@ -533,6 +573,26 @@ async function migrarBancoAnterior() {
 // ENTRADA DO SITE: USUÁRIOS (cadastro e login)
 // =========================================================
 
+const cargosPermitidos = [
+    'Visitante',
+    'Desenvolvedor / Equipe Syntax Lab',
+    'Cliente'
+];
+
+async function exigirAdministradorDaSessao(req) {
+    const usuario = await buscarUm(
+        'SELECT id_usuario, nome, email, cargo FROM usuarios WHERE id_usuario = ?',
+        [req.idUsuarioSessao]
+    );
+
+    if (!usuario) throw erroHttp(401, 'A sessão não é mais válida.');
+    if (usuario.cargo !== 'Administrador') {
+        throw erroHttp(403, 'Apenas a conta administradora pode gerenciar usuários.');
+    }
+
+    return usuario;
+}
+
 // POST /api/usuarios/cadastro
 // Cadastra um usuário. O HTML redireciona depois do sucesso.
 app.post('/api/usuarios/cadastro', rota(async (req, res) => {
@@ -596,8 +656,129 @@ app.post('/api/usuarios/cadastro', rota(async (req, res) => {
     // 201 = Created.
     res.status(201).json({
         mensagem: 'Dados salvos com sucesso.',
-        id_usuario: resultado.id
+        id_usuario: resultado.id,
+        usuario: {
+            id_usuario: resultado.id,
+            nome: pessoa.nome,
+            email: pessoa.email
+        }
     });
+}));
+
+// GET /api/usuarios/me
+app.get('/api/usuarios/me', exigirSessao, rota(async (req, res) => {
+    const usuario = await buscarUm(
+        'SELECT id_usuario, nome, email, cargo FROM usuarios WHERE id_usuario = ?',
+        [req.idUsuarioSessao]
+    );
+
+    if (!usuario) throw erroHttp(401, 'A sessão não é mais válida.');
+    res.json({ usuario });
+}));
+
+app.put('/api/usuarios/me', exigirSessao, rota(async (req, res) => {
+    const nome = texto((req.body || {}).nome);
+    const email = texto((req.body || {}).email).toLowerCase();
+
+    if (!nome || nome.length > 120 || !emailValido(email) || email.length > 254) {
+        throw erroHttp(400, 'Informe nome e e-mail válidos.');
+    }
+
+    const emailEmUso = await buscarUm(
+        'SELECT id_usuario FROM usuarios WHERE email = ? COLLATE NOCASE AND id_usuario <> ?',
+        [email, req.idUsuarioSessao]
+    );
+    if (emailEmUso) throw erroHttp(409, 'Este e-mail já está cadastrado.');
+
+    await executar(
+        'UPDATE usuarios SET nome = ?, email = ? WHERE id_usuario = ?',
+        [nome, email, req.idUsuarioSessao]
+    );
+    res.json({ mensagem: 'Conta atualizada com sucesso.' });
+}));
+
+// POST /api/usuarios/logout
+app.post('/api/usuarios/logout', (req, res) => {
+    const cookie = req.headers.cookie || '';
+    const correspondencia = cookie.match(/(?:^|;\s*)syntaxlab_session=([a-f0-9]{64})(?:;|$)/);
+    if (correspondencia) sessoes.delete(correspondencia[1]);
+    res.setHeader('Set-Cookie', 'syntaxlab_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0');
+    res.json({ mensagem: 'Sessão encerrada.' });
+});
+
+// GET /api/usuarios — somente administradores.
+app.get('/api/usuarios', exigirSessao, rota(async (req, res) => {
+    await exigirAdministradorDaSessao(req);
+    const usuarios = await consultar(
+        'SELECT id_usuario, nome, email, cargo FROM usuarios ORDER BY id_usuario ASC'
+    );
+    res.json(usuarios);
+}));
+
+// PUT /api/usuarios/:id — altera cadastro e cargo de um usuário.
+app.put('/api/usuarios/:id', exigirSessao, rota(async (req, res) => {
+    await exigirAdministradorDaSessao(req);
+    const idUsuario = Number(req.params.id);
+    const dados = req.body || {};
+    const nome = texto(dados.nome);
+    const email = texto(dados.email).toLowerCase();
+    const cargo = texto(dados.cargo);
+
+    if (!Number.isInteger(idUsuario) || idUsuario < 1) {
+        throw erroHttp(400, 'Identificador de usuário inválido.');
+    }
+    if (!nome || nome.length > 120 || !emailValido(email) || email.length > 254) {
+        throw erroHttp(400, 'Informe nome e e-mail válidos.');
+    }
+    if (!cargosPermitidos.includes(cargo)) {
+        throw erroHttp(400, 'Selecione um cargo válido.');
+    }
+
+    const usuarioExistente = await buscarUm(
+        'SELECT id_usuario, cargo FROM usuarios WHERE id_usuario = ?',
+        [idUsuario]
+    );
+    if (!usuarioExistente) throw erroHttp(404, 'Usuário não encontrado.');
+    if (usuarioExistente.cargo === 'Administrador') {
+        throw erroHttp(403, 'A conta administradora principal não pode ser alterada.');
+    }
+
+    const emailEmUso = await buscarUm(
+        'SELECT id_usuario FROM usuarios WHERE email = ? COLLATE NOCASE AND id_usuario <> ?',
+        [email, idUsuario]
+    );
+    if (emailEmUso) throw erroHttp(409, 'Este e-mail já está cadastrado.');
+
+    await executar(
+        'UPDATE usuarios SET nome = ?, email = ?, cargo = ? WHERE id_usuario = ?',
+        [nome, email, cargo, idUsuario]
+    );
+    res.json({ mensagem: 'Cadastro atualizado com sucesso.' });
+}));
+
+// DELETE /api/usuarios/:id — exclui um usuário, exceto a conta principal.
+app.delete('/api/usuarios/:id', exigirSessao, rota(async (req, res) => {
+    await exigirAdministradorDaSessao(req);
+    const idUsuario = Number(req.params.id);
+
+    if (!Number.isInteger(idUsuario) || idUsuario < 1) {
+        throw erroHttp(400, 'Identificador de usuário inválido.');
+    }
+    if (idUsuario === req.idUsuarioSessao) {
+        throw erroHttp(403, 'A conta administradora não pode excluir a si mesma.');
+    }
+
+    const usuario = await buscarUm(
+        'SELECT cargo FROM usuarios WHERE id_usuario = ?',
+        [idUsuario]
+    );
+    if (!usuario) throw erroHttp(404, 'Usuário não encontrado.');
+    if (usuario.cargo === 'Administrador') {
+        throw erroHttp(403, 'A conta administradora principal não pode ser excluída.');
+    }
+
+    await executar('DELETE FROM usuarios WHERE id_usuario = ?', [idUsuario]);
+    res.json({ mensagem: 'Usuário excluído com sucesso.' });
 }));
 
 // POST /api/usuarios/login
@@ -617,7 +798,7 @@ app.post('/api/usuarios/login', rota(async (req, res) => {
 
     // Busca o usuário pelo e-mail.
     const usuario = await buscarUm(
-        'SELECT id_usuario, nome, email, senha_hash FROM usuarios WHERE email = ? COLLATE NOCASE',
+        'SELECT id_usuario, nome, email, senha_hash, cargo FROM usuarios WHERE email = ? COLLATE NOCASE',
         [email]
     );
 
@@ -628,13 +809,16 @@ app.post('/api/usuarios/login', rota(async (req, res) => {
         throw erroHttp(401, 'E-mail ou senha incorretos.');
     }
 
+    iniciarSessao(usuario, res);
+
     // Devolve dados básicos (sem o hash).
     res.json({
         mensagem: 'Login realizado com sucesso.',
         usuario: {
             id_usuario: usuario.id_usuario,
             nome: usuario.nome,
-            email: usuario.email
+            email: usuario.email,
+            cargo: usuario.cargo
         }
     });
 }));

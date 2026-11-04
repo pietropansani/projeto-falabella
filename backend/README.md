@@ -36,7 +36,32 @@ Se aparecer a mensagem de que o back-end está funcionando, está certo.
 ```text
 POST /api/usuarios/cadastro
 POST /api/usuarios/login
+GET  /api/usuarios/me
+PUT  /api/usuarios/me
+POST /api/usuarios/logout
+GET  /api/usuarios                 (somente administrador)
+PUT  /api/usuarios/:id              (somente administrador)
+DELETE /api/usuarios/:id            (somente administrador)
 ```
+
+O cadastro público recebe o cargo `Cliente` por padrão. A conta administradora
+pode atribuir `Visitante`, `Desenvolvedor / Equipe Syntax Lab` ou `Cliente`.
+O login cria uma sessão em cookie HttpOnly, válida por até 8 horas.
+
+### Provisionar a conta administradora
+
+Depois de iniciar o servidor uma vez para criar/atualizar o banco, use o
+PowerShell para fornecer a senha sem salvá-la no código ou no repositório:
+
+```powershell
+$env:SYNTAXLAB_ADMIN_PASSWORD = Read-Host "Senha da conta administradora"
+node backend/criar-admin.js
+Remove-Item Env:\SYNTAXLAB_ADMIN_PASSWORD
+```
+
+O script cria ou atualiza `Admin Syntax Lab` (`admin@syntaxlab.com.br`) e
+armazena somente o hash bcrypt da senha. A tela de gestão fica em
+`/admin-usuarios.html` e só pode ser usada pela sessão administradora.
 
 ### Clientes
 

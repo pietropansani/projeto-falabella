@@ -5,8 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Conta | Syntax Lab</title>
     <link rel="icon" type="image/png" href="IMG/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="pagina-login">
+    <!-- Formulário direto para quem abrir cadastrarlogin.html -->
+    <main class="login-container">
+        <div class="login-cabecalho">
+            <h1>Syntax Lab</h1>
+        </div>
+
+        <section class="login-card">
+            <div class="modal-cabecalho" style="margin-bottom: 16px;">
+                <div>
+                    <h2 style="font-size: 20px; font-weight: 600; color: var(--cor-texto);">Criar nova conta</h2>
+                    <p style="font-size: 13px; color: var(--cor-texto-suave);">Preencha os dados abaixo para se cadastrar.</p>
+                </div>
+            </div>
+
+            <form id="formCadastroDireto" class="formulario">
+                <div class="campo">
+                    <label for="nomeDireto">Nome completo</label>
+                    <input type="text" name="nome" id="nomeDireto" placeholder="Digite seu nome" autocomplete="name" maxlength="120" required>
+                </div>
+
+                <div class="campo">
+                    <label for="emailDireto">E-mail</label>
+                    <input type="email" name="email" id="emailDireto" placeholder="seuemail@exemplo.com" autocomplete="email" maxlength="254" required>
+                </div>
+
+                <div class="campo">
+                    <label for="senhaDireto">Senha</label>
+                    <input type="password" name="senha" id="senhaDireto" placeholder="Mínimo de 6 caracteres" autocomplete="new-password" minlength="6" required>
+                </div>
+
+                <div class="campo">
+                    <label for="rmDireto">RM</label>
+                    <input type="text" name="rm" id="rmDireto" placeholder="Ex.: 1234 (até 4 caracteres)" maxlength="4" required>
+                </div>
+
+                <div class="campo">
+                    <label for="nascimentoDireto">Data de nascimento</label>
+                    <input type="date" name="data_nascimento" id="nascimentoDireto" autocomplete="bday" required>
+                </div>
+
+                <div class="campo">
+                    <label for="generoDireto">Gênero</label>
+                    <select name="genero" id="generoDireto" required>
+                        <option value="" disabled selected>Selecione seu gênero</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
+                    </select>
+                </div>
+
+                <p class="cadastro-feedback" id="cadastroFeedbackDireto" role="status" aria-live="polite" style="color: var(--cor-perigo); font-size: 13px; min-height: 1.4em;"></p>
+
+                <div class="form-acoes">
+                    <button type="submit" class="entrar">Cadastrar Conta</button>
+                    <p class="login-cadastro" style="text-align: center; margin-top: 10px;">
+                        Já tem uma conta? <a href="index.html" style="color: var(--cor-primaria); font-weight: 500;">Fazer login</a>
+                    </p>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- Template que o index.html busca via fetch() -->
     <template id="cadastro-modal-template">
         <div class="modal-cabecalho">
             <div>
@@ -34,7 +101,7 @@
 
             <div class="campo">
                 <label for="rmCadastro">RM</label>
-                <input type="text" name="rm" id="rmCadastro" placeholder="Digite seu RM" maxlength="30" required>
+                <input type="text" name="rm" id="rmCadastro" placeholder="Ex.: 1234 (até 4 caracteres)" maxlength="4" required>
             </div>
 
             <div class="campo">
@@ -59,5 +126,44 @@
             </div>
         </form>
     </template>
+
+    <script>
+        const formDireto = document.getElementById('formCadastroDireto');
+        const feedbackDireto = document.getElementById('cadastroFeedbackDireto');
+
+        if (formDireto) {
+            formDireto.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                feedbackDireto.textContent = '';
+                const botao = formDireto.querySelector('[type="submit"]');
+                botao.disabled = true;
+
+                try {
+                    const dados = Object.fromEntries(new FormData(formDireto));
+                    const res = await fetch('/api/usuarios/cadastro', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dados)
+                    });
+                    const resultado = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(resultado.erro || 'Não foi possível cadastrar.');
+                    }
+
+                    feedbackDireto.style.color = 'var(--cor-sucesso, #168653)';
+                    feedbackDireto.textContent = 'Conta criada com sucesso! Redirecionando para login...';
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1200);
+                } catch (err) {
+                    feedbackDireto.style.color = 'var(--cor-perigo, #dc3545)';
+                    feedbackDireto.textContent = err.message;
+                } finally {
+                    botao.disabled = false;
+                }
+            });
+        }
+    </script>
 </body>
 </html>

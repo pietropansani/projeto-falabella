@@ -68,6 +68,16 @@
                     throw new Error(resultado.erro || 'Não foi possível entrar.');
                 }
 
+                if (resultado.usuario) {
+                    localStorage.setItem('syntaxlab_usuario', JSON.stringify({
+                        id: resultado.usuario.id_usuario,
+                        nome: resultado.usuario.nome,
+                        email: resultado.usuario.email,
+                        cargo: resultado.usuario.cargo,
+                        foto: 'IMG/pietro.png',
+                        status: 'Online'
+                    }));
+                }
                 window.location.href = 'inicio.html';
             } catch (erro) {
                 loginFeedback.textContent = erro.message;

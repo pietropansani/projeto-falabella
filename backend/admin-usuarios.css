@@ -1,0 +1,115 @@
+.admin-usuarios {
+    max-width: 1280px;
+}
+
+.admin-usuarios-cabecalho {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.admin-usuarios-sobretitulo {
+    margin-bottom: 5px;
+    color: var(--cor-primaria-escura);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.admin-usuarios-cabecalho h1 {
+    margin: 0;
+}
+
+.admin-voltar {
+    color: var(--cor-primaria-escura);
+    font-weight: 600;
+}
+
+.admin-usuarios-bloco {
+    padding: 20px;
+}
+
+.admin-usuarios-bloco .secao-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-usuarios-total {
+    color: var(--cor-texto-suave);
+    font-size: 13px;
+}
+
+.admin-usuarios-feedback {
+    min-height: 24px;
+    margin: 8px 0;
+}
+
+.admin-tabela {
+    min-width: 850px;
+}
+
+.admin-tabela th,
+.admin-tabela td {
+    padding: 12px 10px;
+    vertical-align: middle;
+}
+
+.admin-tabela input,
+.admin-tabela select {
+    width: 100%;
+    min-width: 150px;
+    padding: 8px 9px;
+    border: 1px solid var(--cor-linha);
+    border-radius: 4px;
+    color: var(--cor-texto);
+    background: var(--cor-campo);
+}
+
+.admin-tabela select {
+    min-width: 220px;
+}
+
+.admin-acoes {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.admin-acoes button {
+    min-height: 36px;
+    padding: 6px 10px;
+    border: 1px solid var(--cor-primaria-escura);
+    border-radius: 4px;
+    color: var(--cor-primaria-escura);
+    background: var(--cor-branco);
+    cursor: pointer;
+}
+
+.admin-acoes button:hover {
+    background: var(--cor-elevado);
+}
+
+.admin-acoes .admin-excluir {
+    border-color: var(--cor-perigo);
+    color: var(--cor-perigo);
+}
+
+.admin-acoes button:disabled,
+.admin-tabela input:disabled,
+.admin-tabela select:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+@media (max-width: 700px) {
+    .admin-usuarios-cabecalho {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-usuarios-bloco {
+        padding: 14px;
+    }
+}

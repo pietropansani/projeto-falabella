@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Interativo Compacto | Syntax Lab</title>
+    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="user-menu.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .demo-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        .demo-hero {
+            background: linear-gradient(135deg, #0b2545 0%, #134074 100%);
+            border-radius: 16px;
+            padding: 30px;
+            color: #ffffff;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .demo-badge {
+            display: inline-block;
+            background: rgba(14, 165, 233, 0.25);
+            color: #38bdf8;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+        }
+        .demo-hero h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+        .demo-hero p {
+            color: #cbd5e1;
+            font-size: 14px;
+            max-width: 600px;
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .demo-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .demo-card h2 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .demo-card p {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .demo-btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #0ea5e9;
+            color: #ffffff;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 12.5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .demo-btn-action:hover {
+            background: #0284c7;
+        }
+        .demo-btn-outline {
+            background: transparent;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            margin-left: 6px;
+        }
+        .demo-btn-outline:hover {
+            background: #f1f5f9;
+        }
+        .code-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 12px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body style="margin-left: 0;">
+
+    <div class="demo-container">
+        
+        <div class="demo-hero">
+            <span class="demo-badge">Versão Compacta & Minimalista</span>
+            <h1>Menu de Usuário em Todas as Páginas</h1>
+            <p>
+                O menu foi reduzido de tamanho, estilizado de forma minimalista, com a barra de rolagem removida e ativado em todas as telas do sistema.
+            </p>
+            <div style="margin-top: 16px; font-size: 13px; color: #93c5fd;">
+                👉 Clique no botão do Pietro no canto superior direito para testar!
+            </div>
+        </div>
+
+        <div class="demo-grid">
+            
+            <div class="demo-card">
+                <h2>⚡ Ações Essenciais</h2>
+                <p>O menu agora contém apenas os itens que você solicitou:</p>
+                <ul style="padding-left: 18px; font-size: 13px; color: #475569; display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px;">
+                    <li><strong>Gerenciar sua Conta:</strong> Edição rápida de nome e e-mail.</li>
+                    <li><strong>Alternar Perfil:</strong> Sem barra de rolagem, compacto com 1 clique.</li>
+                    <li><strong>Adicionar novo perfil:</strong> Conectar outra conta.</li>
+                    <li><strong>Sair do sistema:</strong> Encerrar sessão com segurança.</li>
+                </ul>
+                <button type="button" class="demo-btn-action" onclick="window.SyntaxLabUserMenu.abrirGerenciarConta()">
+                    Gerenciar Conta
+                </button>
+                <button type="button" class="demo-btn-action demo-btn-outline" onclick="window.SyntaxLabUserMenu.fazerLogout()">
+                    Sair
+                </button>
+            </div>
+
+            <div class="demo-card">
+                <h2>🌐 Páginas Ativadas</h2>
+                <p>O menu já está ativo em todas as telas do site:</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;">
+                    <a href="inicio.html" class="demo-btn-action">Início</a>
+                    <a href="ordem.html" class="demo-btn-action">Ordens</a>
+                    <a href="clientes.html" class="demo-btn-action">Clientes</a>
+                    <a href="tecnicos.html" class="demo-btn-action">Técnicos</a>
+                    <a href="relatorios.html" class="demo-btn-action">Relatórios</a>
+                    <a href="sobre.html" class="demo-btn-action">Sobre Nós</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="user-menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários | Syntax Lab</title>
+    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="user-menu.css">
+    <link rel="stylesheet" href="admin-usuarios.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">Syntax Lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pagina admin-usuarios">
+    <div class="admin-usuarios-cabecalho">
+        <div>
+            <p class="admin-usuarios-sobretitulo">CONTAS E ACESSOS</p>
+            <h1>Gerenciar usuários</h1>
+        </div>
+        <a class="admin-voltar" href="inicio.html">Voltar ao início</a>
+    </div>
+
+    <section class="block admin-usuarios-bloco" aria-labelledby="tituloListaUsuarios">
+        <div class="secao-titulo">
+            <h2 id="tituloListaUsuarios">Cadastros</h2>
+            <span id="totalUsuarios" class="admin-usuarios-total"></span>
+        </div>
+        <p id="feedbackUsuarios" class="admin-usuarios-feedback" role="status" aria-live="polite"></p>
+        <div class="tabela-wrapper">
+            <table class="admin-tabela">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Cargo</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaUsuarios">
+                    <tr><td colspan="4">Carregando usuários...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script src="user-menu.js"></script>
+<script src="admin-usuarios.js"></script>
+</body>
+</html>
