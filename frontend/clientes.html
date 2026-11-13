@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes | Syntax Lab</title>
+    <link rel="icon" type="image/png" href="img/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/user-menu.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">Syntax Lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pagina">
+    <h1>Clientes</h1>
+    <p>Cadastre e gerencie os clientes do sistema.</p>
+    <button type="button" class="botao-menu" id="abrirModalCadastroCliente">+ Cadastrar Cliente</button>
+
+    <section class="block">
+        <div class="secao-titulo"><h2>Registros</h2></div>
+        <div class="tabela-wrapper">
+            <table>
+                <thead><tr><th>Nome</th><th>Telefone</th><th>E-mail</th><th>OS atribuídas</th><th>Ações</th></tr></thead>
+                <tbody id="listaClientes">
+                    <tr><td colspan="5">Carregando clientes...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p id="feedbackClientes" role="status" aria-live="polite"></p>
+    </section>
+</main>
+
+<dialog class="modal-cadastro" id="modalCadastroCliente" aria-labelledby="tituloCadastroCliente">
+    <div class="modal-cabecalho">
+        <div>
+            <h2 id="tituloCadastroCliente">Cadastrar cliente</h2>
+            <p>Informe os dados do cliente.</p>
+        </div>
+        <button type="button" class="modal-fechar" id="fecharModalCadastroCliente">Fechar</button>
+    </div>
+
+    <form id="formCadastroCliente" class="formulario">
+        <div class="campo">
+            <label for="novoClienteNome">Nome completo</label>
+            <input type="text" id="novoClienteNome" name="nome" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="novoClienteTelefone">Telefone</label>
+            <input type="tel" id="novoClienteTelefone" name="telefone" maxlength="40">
+        </div>
+        <div class="campo">
+            <label for="novoClienteEmail">E-mail</label>
+            <input type="email" id="novoClienteEmail" name="email" maxlength="254">
+        </div>
+        <p class="cadastro-feedback" id="erroCadastroCliente" role="status" aria-live="polite"></p>
+        <div class="form-acoes">
+            <button type="submit" class="entrar">Cadastrar</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog class="modal-cadastro" id="modalEditarCliente" aria-labelledby="tituloEditarCliente">
+    <div class="modal-cabecalho">
+        <div>
+            <h2 id="tituloEditarCliente">Editar cliente</h2>
+            <p id="identificacaoCliente"></p>
+        </div>
+        <button type="button" class="modal-fechar" id="fecharModalCliente">Fechar</button>
+    </div>
+
+    <form id="formEditarCliente" class="formulario">
+        <div class="campo">
+            <label for="clienteNome">Nome</label>
+            <input type="text" id="clienteNome" name="nome" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="clienteTelefone">Telefone</label>
+            <input type="tel" id="clienteTelefone" name="telefone" maxlength="40">
+        </div>
+        <div class="campo">
+            <label for="clienteEmail">E-mail</label>
+            <input type="email" id="clienteEmail" name="email" maxlength="254">
+        </div>
+        <p class="cadastro-feedback" id="erroEditarCliente" role="status" aria-live="polite"></p>
+        <div class="form-acoes">
+            <button type="button" class="botao-excluir" id="excluirCliente">Excluir cliente</button>
+            <button type="submit" class="entrar">Salvar alterações</button>
+        </div>
+    </form>
+</dialog>
+
+<script src="js/clientes.js"></script>
+<script src="js/user-menu.js"></script>
+</body>
+</html>

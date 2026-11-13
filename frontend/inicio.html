@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Início | Syntax Lab</title>
-    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview2.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="user-menu.css">
+    <link rel="icon" type="image/png" href="img/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/user-menu.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -36,10 +36,10 @@
 
 <main>
     <section class="cards-resumo">
-    <article class="card1">
-        <h2>Total de OS</h2>
-        <h3 id="qtdTotal">0</h3>
-        <a href="ordem.html">Ver ordens</a>
+        <article class="card1">
+            <h2>Total de OS</h2>
+            <h3 id="qtdTotal">0</h3>
+            <a href="ordem.html">Ver ordens</a>
         </article>
 
         <article class="card2">
@@ -91,27 +91,8 @@
         </article>
     </div>
 </main>
-    <script>
-    async function carregarMetricas() {
-        try {
-            const resposta = await fetch('/api/ordens/resumo');
-            if (!resposta.ok) throw new Error('Erro ao buscar métricas');
 
-            const dados = await resposta.json();
-
-            // Atualiza os valores na tela
-            document.getElementById('qtdTotal').textContent = dados.total;
-            document.getElementById('qtdConcluidas').textContent = dados.concluidas;
-            document.getElementById('qtdEmAndamento').textContent = dados.emAndamento;
-            document.getElementById('qtdAtrasadas').textContent = dados.atrasadas;
-        } catch (erro) {
-            console.error('Falha ao carregar métricas:', erro);
-        }
-    }
-
-    // Executa ao carregar a página
-    document.addEventListener('DOMContentLoaded', carregarMetricas);
-</script>
-<script src="user-menu.js"></script>
+<script src="js/inicio.js"></script>
+<script src="js/user-menu.js"></script>
 </body>
 </html>

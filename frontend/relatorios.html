@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatórios | Syntax Lab</title>
-    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview2.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="user-menu.css">
+    <link rel="icon" type="image/png" href="img/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/user-menu.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
 <body>
 <header class="topo">
     <div class="topo-conteudo">
@@ -67,37 +68,7 @@
     </section>
 </main>
 
-<script>
-    async function carregarResumoOS() {
-        const erroResumoOS = document.getElementById('erroResumoOS');
-
-        try {
-            const resposta = await fetch('/api/ordens');
-            if (!resposta.ok) throw new Error('Falha ao consultar as ordens.');
-
-            const ordens = await resposta.json();
-            const totais = { 1: 0, 2: 0, 3: 0 };
-
-            ordens.forEach((ordem) => {
-                if (Object.hasOwn(totais, ordem.id_status)) {
-                    totais[ordem.id_status] += 1;
-                }
-            });
-
-            document.getElementById('totalEmAndamento').textContent = totais[1];
-            document.getElementById('totalConcluidas').textContent = totais[2];
-            document.getElementById('totalPendentes').textContent = totais[3];
-        } catch (erro) {
-            erroResumoOS.textContent = 'Não foi possível carregar o resumo das ordens.';
-            document.getElementById('totalEmAndamento').textContent = '-';
-            document.getElementById('totalConcluidas').textContent = '-';
-            document.getElementById('totalPendentes').textContent = '-';
-        }
-    }
-
-    carregarResumoOS();
-</script>
-
-<script src="user-menu.js"></script>
+<script src="js/relatorios.js"></script>
+<script src="js/user-menu.js"></script>
 </body>
 </html>

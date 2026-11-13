@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Técnicos | Syntax Lab</title>
+    <link rel="icon" type="image/png" href="img/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/user-menu.css">
+</head>
+<body>
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">Syntax Lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pagina">
+    <h1>Técnicos</h1>
+    <p>Cadastre e gerencie os técnicos da equipe.</p>
+    <button type="button" class="botao-menu" id="abrirModalCadastroTecnico">+ Cadastrar Técnicos</button>
+
+    <section class="block">
+        <div class="secao-titulo"><h2>Registros</h2></div>
+        <p id="feedbackTecnicos" role="status" aria-live="polite"></p>
+        <div class="tabela-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Nível</th>
+                        <th>Horário para contato</th>
+                        <th>OS atribuídas</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaTecnicos">
+                    <tr><td colspan="6">Carregando técnicos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<dialog class="modal-cadastro" id="modalCadastroTecnico" aria-labelledby="tituloCadastroTecnico">
+    <div class="modal-cabecalho">
+        <div>
+            <h2 id="tituloCadastroTecnico">Cadastrar técnico</h2>
+            <p>Informe os dados do novo técnico.</p>
+        </div>
+        <button type="button" class="modal-fechar" id="fecharModalCadastroTecnico">Fechar</button>
+    </div>
+
+    <form id="formCadastroTecnico" class="formulario">
+        <div class="campo">
+            <label for="cadastroTecnicoNome">Nome completo</label>
+            <input type="text" id="cadastroTecnicoNome" name="nome" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoEmail">E-mail</label>
+            <input type="email" id="cadastroTecnicoEmail" name="email" maxlength="254" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoSenha">Senha</label>
+            <input type="password" id="cadastroTecnicoSenha" name="senha" minlength="6" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoIdade">Idade</label>
+            <input type="number" id="cadastroTecnicoIdade" name="idade" min="18" max="99" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoNascimento">Data de nascimento</label>
+            <input type="date" id="cadastroTecnicoNascimento" name="data_nascimento" required>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoGenero">Gênero</label>
+            <select id="cadastroTecnicoGenero" name="genero">
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoNivel">Nível de conhecimento</label>
+            <select id="cadastroTecnicoNivel" name="nivel">
+                <option value="JÚNIOR">Júnior</option>
+                <option value="PLENO">Pleno</option>
+                <option value="SÊNIOR">Sênior</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoBio">Experiência</label>
+            <textarea id="cadastroTecnicoBio" name="bio" maxlength="1000"></textarea>
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoHorario">Melhor horário para contato</label>
+            <input type="time" id="cadastroTecnicoHorario" name="horario_contato">
+        </div>
+        <div class="campo">
+            <label for="cadastroTecnicoDisponibilidade">Data disponível para iniciar</label>
+            <input type="date" id="cadastroTecnicoDisponibilidade" name="data_disponivel" required>
+        </div>
+        <p class="cadastro-feedback" id="erroCadastroTecnico" role="status" aria-live="polite"></p>
+        <div class="form-acoes">
+            <button type="submit" class="entrar">Cadastrar</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog class="modal-cadastro" id="modalEditarTecnico" aria-labelledby="tituloEditarTecnico">
+    <div class="modal-cabecalho">
+        <div>
+            <h2 id="tituloEditarTecnico">Editar técnico</h2>
+            <p id="identificacaoTecnico"></p>
+        </div>
+        <button type="button" class="modal-fechar" id="fecharModalTecnico">Fechar</button>
+    </div>
+
+    <form id="formEditarTecnico" class="formulario">
+        <div class="campo">
+            <label for="tecnicoNome">Nome completo</label>
+            <input type="text" id="tecnicoNome" name="nome" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="tecnicoEmail">E-mail</label>
+            <input type="email" id="tecnicoEmail" name="email" maxlength="254" required>
+        </div>
+        <div class="campo">
+            <label for="tecnicoSenha">Nova senha</label>
+            <input type="password" id="tecnicoSenha" name="senha" minlength="6" autocomplete="new-password" placeholder="Deixe em branco para manter">
+        </div>
+        <div class="campo">
+            <label for="tecnicoIdade">Idade</label>
+            <input type="number" id="tecnicoIdade" name="idade" min="18" max="99">
+        </div>
+        <div class="campo">
+            <label for="tecnicoNascimento">Data de nascimento</label>
+            <input type="date" id="tecnicoNascimento" name="data_nascimento">
+        </div>
+        <div class="campo">
+            <label for="tecnicoGenero">Gênero</label>
+            <select id="tecnicoGenero" name="genero">
+                <option value="">Não informado</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Prefiro_nao_dizer">Prefiro não dizer</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="tecnicoNivel">Nível de conhecimento</label>
+            <select id="tecnicoNivel" name="nivel">
+                <option value="">Não informado</option>
+                <option value="JÚNIOR">Júnior</option>
+                <option value="PLENO">Pleno</option>
+                <option value="SÊNIOR">Sênior</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="tecnicoBio">Experiência</label>
+            <textarea id="tecnicoBio" name="bio" maxlength="1000"></textarea>
+        </div>
+        <div class="campo">
+            <label for="tecnicoHorario">Horário para contato</label>
+            <input type="time" id="tecnicoHorario" name="horario_contato">
+        </div>
+        <div class="campo">
+            <label for="tecnicoDisponibilidade">Data disponível para iniciar</label>
+            <input type="date" id="tecnicoDisponibilidade" name="data_disponivel">
+        </div>
+
+        <p class="cadastro-feedback" id="erroEditarTecnico" role="status" aria-live="polite"></p>
+        <div class="form-acoes">
+            <button type="button" class="botao-excluir" id="excluirTecnico">Excluir técnico</button>
+            <button type="submit" class="entrar">Salvar alterações</button>
+        </div>
+    </form>
+</dialog>
+
+<script src="js/tecnicos.js"></script>
+<script src="js/user-menu.js"></script>
+</body>
+</html>

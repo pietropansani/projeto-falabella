@@ -1561,21 +1561,18 @@ app.get('/api/saude', rota(async (req, res) => {
 // ENTREGA DO FRONT-END (arquivos estáticos)
 // =========================================================
 
+// Caminho para a pasta frontend (separada do backend)
+const pastaFrontend = path.join(__dirname, '..', 'frontend');
+
 // Só estas extensões podem ser baixadas pelo navegador.
 const extensoesPublicas = new Set([
     '.html', '.css', '.js', '.png', '.jpg', '.jpeg',
     '.gif', '.svg', '.webp', '.ico', '.woff', '.woff2', '.ttf'
 ]);
 
-// Arquivos .js do back-end que NUNCA devem ser entregues,
-// mesmo sendo .js (código-fonte do servidor).
-const arquivosInternos = new Set([
-    'server.js', 'api.js', 'database.js', 'consulta.js',
-    'estrutura.js', 'validacao.js', 'erros.js', 'clientes.js',
-    'tecnicos.js', 'equipamentos.js', 'ordens.js',
-    'relatorios.js', 'usuarios.js', 'banco.js', 'pessoas.js',
-    'atualizar-banco.js'
-]);
+// Compatibilidade de rotas para imagens (/IMG e /img)
+app.use('/IMG', express.static(path.join(pastaFrontend, 'img')));
+app.use('/img', express.static(path.join(pastaFrontend, 'img')));
 
 // Middleware que decide se a requisição pode virar um arquivo estático.
 app.use((req, res, next) => {
@@ -1594,25 +1591,16 @@ app.use((req, res, next) => {
         return res.status(400).send('Endereço inválido.');
     }
 
-    // Nome do arquivo e extensão, em minúsculas.
-    const nome = path.basename(caminho).toLowerCase();
     const extensao = path.extname(caminho).toLowerCase();
 
-    // Bloqueia (passa para o 404) se: estiver em node_modules,
-    // for arquivo interno, ou tiver extensão não permitida
-    // (a raiz "/" é exceção, pois serve o index.html).
-    if (
-        caminho.includes('/node_modules/') ||
-        arquivosInternos.has(nome) ||
-        (caminho !== '/' && !extensoesPublicas.has(extensao))
-    ) {
+    // Bloqueia extensões não permitidas (a raiz "/" é exceção, pois serve index.html)
+    if (caminho !== '/' && !extensoesPublicas.has(extensao)) {
         return next();
     }
 
-    // Entrega o arquivo a partir da pasta do server.js.
-    // dotfiles: 'deny' bloqueia arquivos que começam com ponto
-    // (.env, .git...). index.html é a página padrão da raiz.
-    return express.static(__dirname, {
+    // Entrega o arquivo a partir da pasta frontend.
+    // dotfiles: 'deny' bloqueia arquivos que começam com ponto.
+    return express.static(pastaFrontend, {
         dotfiles: 'deny',
         index: 'index.html'
     })(req, res, next);

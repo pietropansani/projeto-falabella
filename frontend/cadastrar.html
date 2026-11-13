@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Técnicos | Syntax Lab</title>
-    <link rel="icon" type="image/png" href="IMG/logo-removebg-preview2.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="user-menu.css">
+    <link rel="icon" type="image/png" href="img/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/user-menu.css">
 </head>
 <body>
 
@@ -103,42 +103,7 @@
     </section>
 </main>
 
-<script>
-    async function cadastrarTecnico(evento) {
-        evento.preventDefault();
-
-        const dados = {
-            nome: document.getElementById('nome').value,
-            email: document.getElementById('email').value,
-            senha: document.getElementById('senha').value,
-            idade: document.getElementById('idade').value,
-            data_nascimento: document.getElementById('data-nascimento').value,
-            genero: document.getElementById('genero').value,
-            nivel: document.getElementById('nivel').value,
-            bio: document.getElementById('bio').value,
-            horario_contato: document.getElementById('horario').value,
-            data_disponivel: document.getElementById('data-disponivel').value
-        };
-
-        const resposta = await fetch('/api/tecnicos/cadastro', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dados)
-        });
-
-        const resultado = await resposta.json();
-
-        if (resposta.ok) {
-            alert('Técnico cadastrado com sucesso!');
-            window.location.href = 'inicio.html';
-        } else {
-            alert(resultado.erro);
-        }
-    }
-</script>
-
-<script src="user-menu.js"></script>
+<script src="js/cadastrar.js"></script>
+<script src="js/user-menu.js"></script>
 </body>
 </html>

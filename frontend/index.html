@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Syntax Lab</title>
+    <link rel="icon" type="image/png" href="img/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pagina-login">
+    <main class="login-container">
+        <div class="login-cabecalho">
+            <h1>Syntax Lab</h1>
+        </div>
+
+        <section class="login-card">
+            <h2>Acesse sua conta</h2>
+
+            <form id="formLogin" class="formulario">
+                <div class="campo">
+                    <label for="email">E-mail</label>
+                    <input type="email" name="email" id="email" placeholder="seuemail@exemplo.com" autocomplete="email" required>
+                </div>
+
+                <div class="campo">
+                    <label for="senha">Senha</label>
+                    <input type="password" name="senha" id="senha" placeholder="Digite sua senha" autocomplete="current-password" required>
+                </div>
+
+                <div class="form-acoes">
+                    <button type="submit" class="entrar">Entrar</button>
+                    <a class="link-senha" href="#recuperar-senha" id="linkSenha">Esqueci minha senha</a>
+                    <p class="login-cadastro">Não tem uma conta? <button type="button" class="link-cadastro" id="abrirCadastro">Cadastrar</button></p>
+                </div>
+                <p class="login-feedback" id="loginFeedback" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+    </main>
+
+    <dialog class="modal-cadastro" id="modalCadastro" aria-labelledby="titulo-cadastro"></dialog>
+
+    <script src="js/index.js"></script>
+</body>
+</html>

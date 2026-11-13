@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS | Syntax Lab</title>
+    <link rel="icon" type="image/png" href="img/logo-removebg-preview2.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/user-menu.css">
+</head>
+<body>
+
+<header class="topo">
+    <div class="topo-conteudo">
+        <nav class="menu">
+            <a href="inicio.html" class="marca">Syntax Lab</a>
+            <p>Manutenção<br>de Equipamentos</p>
+            <a href="inicio.html">Início</a>
+            <a href="ordem.html">Ordem de serviço</a>
+            <a href="tecnicos.html">Técnicos</a>
+            <a href="clientes.html">Clientes</a>
+            <a href="relatorios.html">Relatórios</a>
+            <a href="sobre.html">Sobre Nós</a>
+        </nav>
+    </div>
+</header>
+
+<main class="pagina">
+    <h1>Ordens de Serviço</h1>
+    <p>Gerencie as ordens de serviço do sistema.</p>
+
+    <button type="button" class="botao-menu" id="abrirModalOS">+ Nova OS</button>
+    <p id="feedbackOS" role="status" aria-live="polite"></p>
+
+    <div class="filtros">
+        <input type="text" placeholder="Pesquisar por cliente, equipamento ou nº da OS...">
+        <select>
+            <option>Todos os status</option>
+            <option>Pendente</option>
+            <option>Em andamento</option>
+            <option>Concluída</option>
+        </select>
+    </div>
+
+    <section class="block">
+        <div class="tabela-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nº da OS</th>
+                        <th>Cliente</th>
+                        <th>Equipamento</th>
+                        <th>Técnico</th>
+                        <th>Status</th>
+                        <th>Solicitada em</th>
+                        <th>Emergência</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaOrdens">
+                    <tr><td colspan="8">Carregando ordens...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<dialog class="modal-cadastro" id="modalNovaOS" aria-labelledby="titulo-os"></dialog>
+
+<dialog class="modal-cadastro" id="modalEditarOS" aria-labelledby="titulo-editar-os">
+    <div class="modal-cabecalho">
+        <div>
+            <h2 id="titulo-editar-os">Editar Ordem de Serviço</h2>
+            <p id="numeroOSemEdicao"></p>
+        </div>
+        <button type="button" class="modal-fechar" id="fecharEdicaoOS" aria-label="Fechar janela">Fechar</button>
+    </div>
+    <form id="formEditarOS" class="formulario">
+        <div class="campo">
+            <label for="editarCliente">Cliente</label>
+            <input type="text" id="editarCliente" name="cliente" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="editarEquipamento">Equipamento</label>
+            <input type="text" id="editarEquipamento" name="equipamento" maxlength="120" required>
+        </div>
+        <div class="campo">
+            <label for="editarTecnico">Técnico responsável</label>
+            <select id="editarTecnico" name="id_tecnico" required>
+                <option value="">Carregando técnicos...</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="editarData">Data da solicitação</label>
+            <input type="date" id="editarData" name="data_os" required>
+        </div>
+        <div class="campo">
+            <label for="editarEmergencia">Nível de emergência</label>
+            <select id="editarEmergencia" name="nivel_emergencia" required>
+                <option value="Baixo">Baixo</option>
+                <option value="Médio">Médio</option>
+                <option value="Grave">Grave</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="novoStatusOS">Status</label>
+            <select id="novoStatusOS" name="id_status" required>
+                <option value="1">Em andamento</option>
+                <option value="2">Concluída</option>
+                <option value="3">Pendente</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label for="editarDescricao">Descrição do problema</label>
+            <textarea id="editarDescricao" name="descricao_problema" maxlength="1000" required></textarea>
+        </div>
+        <p class="cadastro-feedback" id="feedbackEditarStatus" role="status" aria-live="polite"></p>
+        <div class="form-acoes">
+            <button type="button" class="botao-excluir" id="excluirOS">Excluir OS</button>
+            <button type="submit" class="entrar">Salvar alterações</button>
+        </div>
+    </form>
+</dialog>
+
+<script src="js/ordem.js"></script>
+<script src="js/user-menu.js"></script>
+</body>
+</html>
