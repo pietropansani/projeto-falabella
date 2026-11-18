@@ -46,13 +46,12 @@ const app = express();
 // Libera CORS para qualquer origem.
 app.use(cors());
 
-// Lê corpo de requisição em JSON e coloca em req.body.
-// O limite de 100kb evita que alguém envie um JSON gigante.
-app.use(express.json({ limit: '100kb' }));
+// Lê corpo de requisição em JSON e coloca em req.body (limite aumentado para suportar envio de fotos).
+app.use(express.json({ limit: '10mb' }));
 
 // Lê corpo de formulários HTML tradicionais (application/x-www-form-urlencoded).
 // "extended: false" usa a biblioteca simples de parse.
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ limit: '10mb', extended: false }));
 
 // ---------------------------------------------------------
 // CAMINHOS DO BANCO DE DADOS
@@ -368,8 +367,23 @@ async function prepararBanco() {
         idade: 'INTEGER',
         data_nascimento: 'TEXT',
         genero: 'TEXT',
-        cargo: "TEXT NOT NULL DEFAULT 'Cliente'"
+        cargo: "TEXT NOT NULL DEFAULT 'Cliente'",
+        foto: 'TEXT'
     });
+
+    // Define fotos iniciais padrão para os usuários que ainda não possuírem foto cadastrada
+    await executar(`
+        UPDATE usuarios 
+        SET foto = CASE 
+            WHEN cargo = 'Administrador' THEN 'img/logo-removebg-preview2.png'
+            WHEN lower(nome) LIKE '%pietro%' THEN 'img/pietro.png'
+            WHEN lower(nome) LIKE '%júlia%' OR lower(nome) LIKE '%julia%' THEN 'img/julia.png'
+            WHEN lower(nome) LIKE '%dafny%' THEN 'img/dafny.png'
+            WHEN lower(nome) LIKE '%joão%' OR lower(nome) LIKE '%joao%' THEN 'img/joao.png'
+            ELSE 'img/pietro.png'
+        END
+        WHERE foto IS NULL OR foto = ''
+    `);
 
     // Índice único no RM, ignorando maiúsculas/minúsculas.
     // Impede dois usuários com o mesmo RM. (NULLs são permitidos
@@ -593,9 +607,59 @@ async function exigirAdministradorDaSessao(req) {
     return usuario;
 }
 
+// Impede que usuários com cadastro de 'Cliente' criem, editem ou registrem dados
+async function exigirNaoCliente(req, res, next) {
+    let idUsuario = req.idUsuarioSessao;
+
+    if (!idUsuario) {
+        const cookie = req.headers.cookie || '';
+        const correspondencia = cookie.match(/(?:^|;\s*)syntaxlab_session=([a-f0-9]{64})(?:;|$)/);
+        const sessao = correspondencia && sessoes.get(correspondencia[1]);
+        if (sessao && sessao.expiraEm > Date.now()) {
+            idUsuario = sessao.idUsuario;
+            req.idUsuarioSessao = idUsuario;
+            req.tokenSessao = correspondencia[1];
+        }
+    }
+
+    if (!idUsuario) {
+        return next(erroHttp(401, 'Faça login para realizar esta ação.'));
+    }
+
+    const usuario = await buscarUm(
+        'SELECT id_usuario, nome, email, cargo FROM usuarios WHERE id_usuario = ?',
+        [idUsuario]
+    );
+
+    if (!usuario) {
+        return next(erroHttp(401, 'A sessão não é mais válida.'));
+    }
+
+    if (usuario.cargo === 'Cliente') {
+        return next(erroHttp(403, 'Usuários com cadastro de Cliente não têm permissão para criar, editar ou registrar itens no sistema.'));
+    }
+
+    req.usuarioLogado = usuario;
+    next();
+}
+
 // POST /api/usuarios/cadastro
 // Cadastra um usuário. O HTML redireciona depois do sucesso.
 app.post('/api/usuarios/cadastro', rota(async (req, res) => {
+    // Se o usuário logado for Cliente, impede cadastro de novos usuários
+    const cookie = req.headers.cookie || '';
+    const correspondencia = cookie.match(/(?:^|;\s*)syntaxlab_session=([a-f0-9]{64})(?:;|$)/);
+    const sessao = correspondencia && sessoes.get(correspondencia[1]);
+    if (sessao && sessao.expiraEm > Date.now()) {
+        const usuarioLogado = await buscarUm(
+            'SELECT cargo FROM usuarios WHERE id_usuario = ?',
+            [sessao.idUsuario]
+        );
+        if (usuarioLogado && usuarioLogado.cargo === 'Cliente') {
+            throw erroHttp(403, 'Usuários com cadastro de Cliente não têm permissão para cadastrar novos usuários.');
+        }
+    }
+
     // req.body pode ser undefined; "|| {}" evita erro.
     const dados = req.body || {};
 
@@ -668,7 +732,7 @@ app.post('/api/usuarios/cadastro', rota(async (req, res) => {
 // GET /api/usuarios/me
 app.get('/api/usuarios/me', exigirSessao, rota(async (req, res) => {
     const usuario = await buscarUm(
-        'SELECT id_usuario, nome, email, cargo FROM usuarios WHERE id_usuario = ?',
+        'SELECT id_usuario, nome, email, cargo, foto FROM usuarios WHERE id_usuario = ?',
         [req.idUsuarioSessao]
     );
 
@@ -677,8 +741,10 @@ app.get('/api/usuarios/me', exigirSessao, rota(async (req, res) => {
 }));
 
 app.put('/api/usuarios/me', exigirSessao, rota(async (req, res) => {
-    const nome = texto((req.body || {}).nome);
-    const email = texto((req.body || {}).email).toLowerCase();
+    const dados = req.body || {};
+    const nome = texto(dados.nome);
+    const email = texto(dados.email).toLowerCase();
+    const foto = typeof dados.foto === 'string' ? dados.foto.trim() : null;
 
     if (!nome || nome.length > 120 || !emailValido(email) || email.length > 254) {
         throw erroHttp(400, 'Informe nome e e-mail válidos.');
@@ -690,10 +756,17 @@ app.put('/api/usuarios/me', exigirSessao, rota(async (req, res) => {
     );
     if (emailEmUso) throw erroHttp(409, 'Este e-mail já está cadastrado.');
 
-    await executar(
-        'UPDATE usuarios SET nome = ?, email = ? WHERE id_usuario = ?',
-        [nome, email, req.idUsuarioSessao]
-    );
+    if (foto !== null) {
+        await executar(
+            'UPDATE usuarios SET nome = ?, email = ?, foto = ? WHERE id_usuario = ?',
+            [nome, email, foto, req.idUsuarioSessao]
+        );
+    } else {
+        await executar(
+            'UPDATE usuarios SET nome = ?, email = ? WHERE id_usuario = ?',
+            [nome, email, req.idUsuarioSessao]
+        );
+    }
     res.json({ mensagem: 'Conta atualizada com sucesso.' });
 }));
 
@@ -710,7 +783,7 @@ app.post('/api/usuarios/logout', (req, res) => {
 app.get('/api/usuarios', exigirSessao, rota(async (req, res) => {
     await exigirAdministradorDaSessao(req);
     const usuarios = await consultar(
-        'SELECT id_usuario, nome, email, cargo FROM usuarios ORDER BY id_usuario ASC'
+        'SELECT id_usuario, nome, email, cargo, foto FROM usuarios ORDER BY id_usuario ASC'
     );
     res.json(usuarios);
 }));
@@ -723,6 +796,7 @@ app.put('/api/usuarios/:id', exigirSessao, rota(async (req, res) => {
     const nome = texto(dados.nome);
     const email = texto(dados.email).toLowerCase();
     const cargo = texto(dados.cargo);
+    const foto = typeof dados.foto === 'string' ? dados.foto.trim() : null;
 
     if (!Number.isInteger(idUsuario) || idUsuario < 1) {
         throw erroHttp(400, 'Identificador de usuário inválido.');
@@ -749,10 +823,17 @@ app.put('/api/usuarios/:id', exigirSessao, rota(async (req, res) => {
     );
     if (emailEmUso) throw erroHttp(409, 'Este e-mail já está cadastrado.');
 
-    await executar(
-        'UPDATE usuarios SET nome = ?, email = ?, cargo = ? WHERE id_usuario = ?',
-        [nome, email, cargo, idUsuario]
-    );
+    if (foto !== null) {
+        await executar(
+            'UPDATE usuarios SET nome = ?, email = ?, cargo = ?, foto = ? WHERE id_usuario = ?',
+            [nome, email, cargo, foto, idUsuario]
+        );
+    } else {
+        await executar(
+            'UPDATE usuarios SET nome = ?, email = ?, cargo = ? WHERE id_usuario = ?',
+            [nome, email, cargo, idUsuario]
+        );
+    }
     res.json({ mensagem: 'Cadastro atualizado com sucesso.' });
 }));
 
@@ -798,7 +879,7 @@ app.post('/api/usuarios/login', rota(async (req, res) => {
 
     // Busca o usuário pelo e-mail.
     const usuario = await buscarUm(
-        'SELECT id_usuario, nome, email, senha_hash, cargo FROM usuarios WHERE email = ? COLLATE NOCASE',
+        'SELECT id_usuario, nome, email, senha_hash, cargo, foto FROM usuarios WHERE email = ? COLLATE NOCASE',
         [email]
     );
 
@@ -818,7 +899,8 @@ app.post('/api/usuarios/login', rota(async (req, res) => {
             id_usuario: usuario.id_usuario,
             nome: usuario.nome,
             email: usuario.email,
-            cargo: usuario.cargo
+            cargo: usuario.cargo,
+            foto: usuario.foto
         }
     });
 }));
@@ -828,7 +910,7 @@ app.post('/api/usuarios/login', rota(async (req, res) => {
 // =========================================================
 
 // POST /api/clientes — cria um cliente.
-app.post('/api/clientes', rota(async (req, res) => {
+app.post('/api/clientes', rota(exigirNaoCliente), rota(async (req, res) => {
     const dados = req.body || {};
     const nome = texto(dados.nome);
     const telefone = texto(dados.telefone);
@@ -878,7 +960,7 @@ app.get('/api/clientes', rota(async (req, res) => {
 }));
 
 // PUT /api/clientes/:id — edita um cliente existente.
-app.put('/api/clientes/:id', rota(async (req, res) => {
+app.put('/api/clientes/:id', rota(exigirNaoCliente), rota(async (req, res) => {
     // :id da URL vem como texto; converte para número.
     const idCliente = Number(req.params.id);
     const dados = req.body || {};
@@ -915,7 +997,7 @@ app.put('/api/clientes/:id', rota(async (req, res) => {
 }));
 
 // DELETE /api/clientes/:id — exclui um cliente (se não tiver OS).
-app.delete('/api/clientes/:id', rota(async (req, res) => {
+app.delete('/api/clientes/:id', rota(exigirNaoCliente), rota(async (req, res) => {
     const idCliente = Number(req.params.id);
 
     if (!Number.isInteger(idCliente) || idCliente < 1) {
@@ -947,7 +1029,7 @@ app.delete('/api/clientes/:id', rota(async (req, res) => {
 // =========================================================
 
 // POST /api/tecnicos/cadastro — cadastra um técnico.
-app.post('/api/tecnicos/cadastro', rota(async (req, res) => {
+app.post('/api/tecnicos/cadastro', rota(exigirNaoCliente), rota(async (req, res) => {
     const dados = req.body || {};
 
     // Validação comum, sem exigir idade/nascimento/gênero.
@@ -1019,7 +1101,7 @@ app.get('/api/tecnicos', rota(async (req, res) => {
 
 // PUT /api/tecnicos/:id — edita um técnico.
 // A senha é opcional: se vier vazia, mantém a antiga.
-app.put('/api/tecnicos/:id', rota(async (req, res) => {
+app.put('/api/tecnicos/:id', rota(exigirNaoCliente), rota(async (req, res) => {
     const idTecnico = Number(req.params.id);
     const dados = req.body || {};
     const nome = texto(dados.nome);
@@ -1112,7 +1194,7 @@ app.put('/api/tecnicos/:id', rota(async (req, res) => {
 }));
 
 // DELETE /api/tecnicos/:id — exclui um técnico (se não tiver OS).
-app.delete('/api/tecnicos/:id', rota(async (req, res) => {
+app.delete('/api/tecnicos/:id', rota(exigirNaoCliente), rota(async (req, res) => {
     const idTecnico = Number(req.params.id);
 
     if (!Number.isInteger(idTecnico) || idTecnico < 1) {
@@ -1186,7 +1268,7 @@ app.get('/api/ordens', rota(async (req, res) => {
 // POST /api/ordens — cria uma nova OS.
 // O cliente e o equipamento chegam como TEXTO; se não existirem
 // no banco, são criados automaticamente.
-app.post('/api/ordens', rota(async (req, res) => {
+app.post('/api/ordens', rota(exigirNaoCliente), rota(async (req, res) => {
     const dados = req.body || {};
     const cliente = texto(dados.cliente);
     const equipamento = texto(dados.equipamento);
@@ -1311,7 +1393,7 @@ app.post('/api/ordens', rota(async (req, res) => {
 }));
 
 // PUT /api/ordens/:id — edita uma OS completa (inclusive o status).
-app.put('/api/ordens/:id', rota(async (req, res) => {
+app.put('/api/ordens/:id', rota(exigirNaoCliente), rota(async (req, res) => {
     const idOrdem = Number(req.params.id);
     const dados = req.body || {};
     const cliente = texto(dados.cliente);
@@ -1435,7 +1517,7 @@ app.put('/api/ordens/:id', rota(async (req, res) => {
 }));
 
 // DELETE /api/ordens/:id — exclui uma OS.
-app.delete('/api/ordens/:id', rota(async (req, res) => {
+app.delete('/api/ordens/:id', rota(exigirNaoCliente), rota(async (req, res) => {
     const idOrdem = Number(req.params.id);
 
     if (!Number.isInteger(idOrdem) || idOrdem < 1) {
@@ -1458,7 +1540,7 @@ app.delete('/api/ordens/:id', rota(async (req, res) => {
 
 // PUT /api/ordens/:id/status — altera SÓ o status de uma OS
 // (atalho para botões como "concluir").
-app.put('/api/ordens/:id/status', rota(async (req, res) => {
+app.put('/api/ordens/:id/status', rota(exigirNaoCliente), rota(async (req, res) => {
     const idOrdem = Number(req.params.id);
     const idStatus = Number((req.body || {}).id_status);
 
@@ -1575,7 +1657,7 @@ app.use('/IMG', express.static(path.join(pastaFrontend, 'img')));
 app.use('/img', express.static(path.join(pastaFrontend, 'img')));
 
 // Middleware que decide se a requisição pode virar um arquivo estático.
-app.use((req, res, next) => {
+app.use(rota(async (req, res, next) => {
     // Arquivos só são entregues em GET/HEAD; outros métodos seguem adiante.
     if (req.method !== 'GET' && req.method !== 'HEAD') {
         return next();
@@ -1591,6 +1673,44 @@ app.use((req, res, next) => {
         return res.status(400).send('Endereço inválido.');
     }
 
+    // Proteção rigorosa: tela de gerenciar usuários só acessível por Administrador
+    if (caminho === '/admin-usuarios.html') {
+        const cookie = req.headers.cookie || '';
+        const correspondencia = cookie.match(/(?:^|;\s*)syntaxlab_session=([a-f0-9]{64})(?:;|$)/);
+        const sessao = correspondencia && sessoes.get(correspondencia[1]);
+
+        if (!sessao || sessao.expiraEm <= Date.now()) {
+            return res.redirect(302, '/index.html');
+        }
+
+        const usuario = await buscarUm(
+            'SELECT cargo FROM usuarios WHERE id_usuario = ?',
+            [sessao.idUsuario]
+        );
+
+        if (!usuario || usuario.cargo !== 'Administrador') {
+            return res.redirect(302, '/inicio.html');
+        }
+    }
+
+    // Proteção: telas avulsas de cadastro bloqueadas para quem tem cadastro de Cliente
+    if (caminho === '/cadascliente.html' || caminho === '/cadastrar.html') {
+        const cookie = req.headers.cookie || '';
+        const correspondencia = cookie.match(/(?:^|;\s*)syntaxlab_session=([a-f0-9]{64})(?:;|$)/);
+        const sessao = correspondencia && sessoes.get(correspondencia[1]);
+
+        if (sessao && sessao.expiraEm > Date.now()) {
+            const usuario = await buscarUm(
+                'SELECT cargo FROM usuarios WHERE id_usuario = ?',
+                [sessao.idUsuario]
+            );
+
+            if (usuario && usuario.cargo === 'Cliente') {
+                return res.redirect(302, '/inicio.html');
+            }
+        }
+    }
+
     const extensao = path.extname(caminho).toLowerCase();
 
     // Bloqueia extensões não permitidas (a raiz "/" é exceção, pois serve index.html)
@@ -1604,7 +1724,7 @@ app.use((req, res, next) => {
         dotfiles: 'deny',
         index: 'index.html'
     })(req, res, next);
-});
+}));
 
 // =========================================================
 // TRATAMENTO DE ERROS (devem vir por último)

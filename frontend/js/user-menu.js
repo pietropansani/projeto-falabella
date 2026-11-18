@@ -12,12 +12,13 @@
         nome: 'Pietro Pansani',
         email: 'pietropansani038@gmail.com',
         cargo: 'Back-end',
-        foto: 'IMG/pietro.png'
+        foto: 'img/pietro.png'
     };
 
     let listaPerfis = carregarPerfisLocais();
     let usuarioAtual = carregarUsuarioSalvo();
     let sessaoVerificada = false;
+    let fotoSelecionadaParaSalvar = null;
 
     function carregarPerfisLocais() {
         try {
@@ -74,19 +75,65 @@
             const resultado = await resposta.json();
             const usuario = resultado.usuario;
             sessaoVerificada = true;
+
+            let fotoUsuario = usuario.foto;
+            if (!fotoUsuario) {
+                const nomeLower = (usuario.nome || '').toLowerCase();
+                if (usuario.cargo === 'Administrador') {
+                    fotoUsuario = 'img/logo-removebg-preview2.png';
+                } else if (nomeLower.includes('pietro')) {
+                    fotoUsuario = 'img/pietro.png';
+                } else if (nomeLower.includes('júlia') || nomeLower.includes('julia')) {
+                    fotoUsuario = 'img/julia.png';
+                } else if (nomeLower.includes('dafny')) {
+                    fotoUsuario = 'img/dafny.png';
+                } else if (nomeLower.includes('joão') || nomeLower.includes('joao')) {
+                    fotoUsuario = 'img/joao.png';
+                } else {
+                    fotoUsuario = usuarioAtual.foto || 'img/pietro.png';
+                }
+            }
+
             salvarUsuario({
                 id: String(usuario.id_usuario),
                 nome: usuario.nome,
                 email: usuario.email,
                 cargo: usuario.cargo,
-                foto: usuario.cargo === 'Administrador'
-                    ? 'IMG/logo-removebg-preview2.png'
-                    : usuarioAtual.foto || 'IMG/pietro.png',
+                foto: fotoUsuario,
                 status: 'Online'
             });
         } catch (e) {
             console.error('Não foi possível validar a sessão.', e);
         }
+    }
+
+    function redimensionarImagem(dataUrl, maxDim = 320, qualidade = 0.88) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                let largura = img.width;
+                let altura = img.height;
+                if (largura > altura) {
+                    if (largura > maxDim) {
+                        altura = Math.round((altura * maxDim) / largura);
+                        largura = maxDim;
+                    }
+                } else {
+                    if (altura > maxDim) {
+                        largura = Math.round((largura * maxDim) / altura);
+                        altura = maxDim;
+                    }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = largura;
+                canvas.height = altura;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, largura, altura);
+                resolve(canvas.toDataURL('image/jpeg', qualidade));
+            };
+            img.onerror = () => resolve(dataUrl);
+            img.src = dataUrl;
+        });
     }
 
     // Gera um avatar elegante com as iniciais para novos usuários criados
@@ -167,9 +214,15 @@
                 
                 <!-- Cabeçalho do Perfil -->
                 <div class="user-card-header">
-                    <div class="user-header-avatar-wrap">
+                    <div class="user-header-avatar-wrap" id="umHeaderAvatarWrap" title="Clique para gerenciar sua conta e alterar foto">
                         <img src="${usuarioAtual.foto}" alt="${usuarioAtual.nome}" class="user-header-avatar" id="umHeaderAvatar">
                         <span class="user-header-badge" title="Online"></span>
+                        <div class="user-header-avatar-edit-badge" title="Alterar foto">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                <circle cx="12" cy="13" r="4"></circle>
+                            </svg>
+                        </div>
                     </div>
                     
                     <h3 class="user-header-name">
@@ -250,9 +303,9 @@
         const modais = document.createElement('div');
         modais.id = 'umModaisContainer';
         modais.innerHTML = `
-            <!-- Modal Compacto: Gerenciar Conta -->
+            <!-- Modal Compacto: Gerenciar Conta & Alterar Foto -->
             <div class="um-modal-backdrop" id="modalManageAccount">
-                <div class="um-modal-card">
+                <div class="um-modal-card um-modal-card-manage">
                     <div class="um-modal-header">
                         <div class="um-modal-title">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -264,6 +317,60 @@
                         <button type="button" class="um-modal-close" data-close-modal="modalManageAccount">&times;</button>
                     </div>
                     <form id="formGerenciarConta" class="um-modal-body">
+                        
+                        <!-- Seção de Foto do Usuário -->
+                        <div class="um-photo-section">
+                            <div class="um-photo-preview-wrap" id="umPhotoPreviewWrap" title="Clique para enviar nova foto">
+                                <img id="umManageAvatarPreview" src="${usuarioAtual.foto}" alt="Foto de perfil" class="um-manage-avatar-preview">
+                                <div class="um-photo-upload-badge" title="Selecionar foto">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                        <circle cx="12" cy="13" r="4"></circle>
+                                    </svg>
+                                </div>
+                                <input type="file" id="inputFotoArquivo" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;">
+                            </div>
+                            <div class="um-photo-controls">
+                                <span class="um-photo-title">Foto de Perfil</span>
+                                <div class="um-photo-actions">
+                                    <button type="button" class="um-btn-photo-action" id="btnEscolherFotoArquivo">
+                                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="17 8 12 3 7 8"></polyline>
+                                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                                        </svg>
+                                        <span>Carregar foto</span>
+                                    </button>
+                                    <button type="button" class="um-btn-photo-remove" id="btnRemoverFoto" title="Restaurar avatar padrão">
+                                        Remover
+                                    </button>
+                                </div>
+                                <p class="um-photo-hint">Envie um arquivo PNG, JPG ou WEBP do seu dispositivo.</p>
+                            </div>
+                        </div>
+
+                        <!-- Opções rápidas de avatares -->
+                        <div class="um-preset-avatars-wrap">
+                            <span class="um-preset-avatars-label">Ou escolha um avatar:</span>
+                            <div class="um-preset-avatars-list">
+                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/pietro.png" title="Pietro">
+                                    <img src="img/pietro.png" alt="Pietro">
+                                </button>
+                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/julia.png" title="Júlia">
+                                    <img src="img/julia.png" alt="Júlia">
+                                </button>
+                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/dafny.png" title="Dafny">
+                                    <img src="img/dafny.png" alt="Dafny">
+                                </button>
+                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/joao.png" title="João">
+                                    <img src="img/joao.png" alt="João">
+                                </button>
+                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/logo-removebg-preview2.png" title="Logo Syntax">
+                                    <img src="img/logo-removebg-preview2.png" alt="Logo">
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="um-form-group">
                             <label class="um-form-label" for="inputNomeUsuario">Nome Completo</label>
                             <input type="text" id="inputNomeUsuario" class="um-form-input" value="${usuarioAtual.nome}" required>
@@ -278,7 +385,7 @@
                         </div>
                         <div class="um-modal-footer" style="padding: 12px 0 0 0; background: transparent; border: none;">
                             <button type="button" class="um-btn-secondary" data-close-modal="modalManageAccount">Cancelar</button>
-                            <button type="submit" class="um-btn-primary">Salvar</button>
+                            <button type="submit" class="um-btn-primary">Salvar Alterações</button>
                         </div>
                     </form>
                 </div>
@@ -423,6 +530,36 @@
         }, 2600);
     }
 
+    function destacarPreset(btnElement) {
+        document.querySelectorAll('.um-preset-avatar-btn').forEach(btn => {
+            if (btn === btnElement) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+    }
+
+    function prepararModalGerenciarConta() {
+        fotoSelecionadaParaSalvar = usuarioAtual.foto;
+        const pAvatar = document.getElementById('umManageAvatarPreview');
+        const inNome = document.getElementById('inputNomeUsuario');
+        const inEmail = document.getElementById('inputEmailUsuario');
+        const inCargo = document.getElementById('inputCargoUsuario');
+        if (pAvatar) pAvatar.src = usuarioAtual.foto;
+        if (inNome) inNome.value = usuarioAtual.nome;
+        if (inEmail) inEmail.value = usuarioAtual.email;
+        if (inCargo) inCargo.value = usuarioAtual.cargo;
+
+        let presetEncontrado = null;
+        document.querySelectorAll('.um-preset-avatar-btn').forEach(btn => {
+            if (btn.getAttribute('data-preset-avatar') === usuarioAtual.foto) {
+                presetEncontrado = btn;
+            }
+        });
+        destacarPreset(presetEncontrado);
+    }
+
     function vincularEventos() {
         const trigger = document.getElementById('btnUserMenuTrigger');
         const menu = document.getElementById('userDropdownMenu');
@@ -473,6 +610,89 @@
             });
         }
 
+        const headerAvatarWrap = document.getElementById('umHeaderAvatarWrap');
+        if (headerAvatarWrap) {
+            headerAvatarWrap.addEventListener('click', function (e) {
+                e.stopPropagation();
+                fecharMenu();
+                abrirModal('modalManageAccount');
+            });
+        }
+
+        const inputFoto = document.getElementById('inputFotoArquivo');
+        const btnEscolherFoto = document.getElementById('btnEscolherFotoArquivo');
+        const previewWrap = document.getElementById('umPhotoPreviewWrap');
+        const previewImg = document.getElementById('umManageAvatarPreview');
+        const btnRemoverFoto = document.getElementById('btnRemoverFoto');
+
+        if (btnEscolherFoto && inputFoto) {
+            btnEscolherFoto.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                inputFoto.click();
+            });
+        }
+
+        if (previewWrap && inputFoto) {
+            previewWrap.addEventListener('click', (e) => {
+                inputFoto.click();
+            });
+        }
+
+        if (inputFoto) {
+            inputFoto.addEventListener('change', function () {
+                const arquivo = this.files && this.files[0];
+                if (!arquivo) return;
+
+                if (!arquivo.type.startsWith('image/')) {
+                    mostrarToast('Selecione uma imagem válida (PNG, JPG ou WEBP).');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    try {
+                        const resized = await redimensionarImagem(e.target.result, 320, 0.88);
+                        fotoSelecionadaParaSalvar = resized;
+                        if (previewImg) previewImg.src = resized;
+                        destacarPreset(null);
+                        mostrarToast('Foto selecionada! Clique em Salvar para aplicar.');
+                    } catch (err) {
+                        console.error('Erro ao redimensionar foto:', err);
+                        fotoSelecionadaParaSalvar = e.target.result;
+                        if (previewImg) previewImg.src = e.target.result;
+                    }
+                };
+                reader.readAsDataURL(arquivo);
+            });
+        }
+
+        document.querySelectorAll('.um-preset-avatar-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const preset = this.getAttribute('data-preset-avatar');
+                if (preset) {
+                    fotoSelecionadaParaSalvar = preset;
+                    if (previewImg) previewImg.src = preset;
+                    destacarPreset(this);
+                    mostrarToast('Avatar selecionado!');
+                }
+            });
+        });
+
+        if (btnRemoverFoto) {
+            btnRemoverFoto.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const nomeAtual = (document.getElementById('inputNomeUsuario')?.value || usuarioAtual.nome);
+                fotoSelecionadaParaSalvar = gerarAvatarSvg(nomeAtual);
+                if (previewImg) previewImg.src = fotoSelecionadaParaSalvar;
+                destacarPreset(null);
+                mostrarToast('Foto redefinida para avatar padrão.');
+            });
+        }
+
         const btnManage = document.getElementById('btnAbrirManageAccount');
         if (btnManage) {
             btnManage.addEventListener('click', function (e) {
@@ -497,22 +717,39 @@
                 const novoEmail = document.getElementById('inputEmailUsuario').value.trim();
                 if (!novoNome || !novoEmail) return;
 
+                const novaFoto = fotoSelecionadaParaSalvar || usuarioAtual.foto;
+                const btnSubmit = formManage.querySelector('[type="submit"]');
+                if (btnSubmit) btnSubmit.disabled = true;
+
                 try {
                     const resposta = await fetch('/api/usuarios/me', {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nome: novoNome, email: novoEmail })
+                        body: JSON.stringify({ nome: novoNome, email: novoEmail, foto: novaFoto })
                     });
                     const resultado = await resposta.json();
                     if (!resposta.ok) throw new Error(resultado.erro || 'Não foi possível atualizar a conta.');
 
                     usuarioAtual.nome = novoNome;
                     usuarioAtual.email = novoEmail;
+                    usuarioAtual.foto = novaFoto;
                     salvarUsuario(usuarioAtual);
+
+                    const index = listaPerfis.findIndex(p => p.id === usuarioAtual.id || p.email.toLowerCase() === usuarioAtual.email.toLowerCase());
+                    if (index !== -1) {
+                        listaPerfis[index].nome = novoNome;
+                        listaPerfis[index].email = novoEmail;
+                        listaPerfis[index].foto = novaFoto;
+                        salvarPerfisLocais(listaPerfis);
+                        renderizarListaPerfis();
+                    }
+
                     fecharTodosModais();
-                    mostrarToast('Conta atualizada!');
+                    mostrarToast('Configurações e foto salvas com sucesso!');
                 } catch (erro) {
                     mostrarToast(erro.message);
+                } finally {
+                    if (btnSubmit) btnSubmit.disabled = false;
                 }
             });
         }
@@ -610,7 +847,12 @@
 
     function abrirModal(id) {
         const modal = document.getElementById(id);
-        if (modal) modal.classList.add('open');
+        if (modal) {
+            if (id === 'modalManageAccount') {
+                prepararModalGerenciarConta();
+            }
+            modal.classList.add('open');
+        }
     }
 
     function fecharModal(id) {
