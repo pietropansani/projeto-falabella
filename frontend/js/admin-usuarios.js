@@ -119,17 +119,20 @@
         wrapperNome.style.alignItems = 'center';
         wrapperNome.style.gap = '8px';
 
-        const thumb = document.createElement('img');
-        thumb.src = usuario.foto || (usuario.cargo === 'Administrador' ? 'img/logo-removebg-preview2.png' : 'img/pietro.png');
-        thumb.alt = usuario.nome;
-        thumb.style.width = '28px';
-        thumb.style.height = '28px';
-        thumb.style.borderRadius = '50%';
-        thumb.style.objectFit = 'cover';
-        thumb.style.border = '1px solid rgba(255,255,255,0.2)';
-        thumb.style.flexShrink = '0';
-
-        wrapperNome.append(thumb, nome);
+        if (usuario.foto) {
+            const thumb = document.createElement('img');
+            thumb.src = usuario.foto;
+            thumb.alt = usuario.nome;
+            thumb.style.width = '28px';
+            thumb.style.height = '28px';
+            thumb.style.borderRadius = '50%';
+            thumb.style.objectFit = 'cover';
+            thumb.style.border = '1px solid rgba(255,255,255,0.2)';
+            thumb.style.flexShrink = '0';
+            wrapperNome.append(thumb, nome);
+        } else {
+            wrapperNome.append(nome);
+        }
         celulaNome.append(wrapperNome);
         celulaEmail.append(email);
         celulaCargo.append(cargo);

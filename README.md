@@ -77,7 +77,7 @@ Página destinada ao preenchimento das informações dos clientes.
 Seu objetivo é permitir o registro dos dados necessários para identificar e manter organizados os clientes atendidos pela empresa.
 
 
-![Cadastro de clientes](prints/cadascliente.png)
+![Cadastro de clientes](prints/cadastrocliente.png)
 
 ## 4. `clientes.html` — Gerenciamento de clientes
 
@@ -104,7 +104,7 @@ Página utilizada para visualizar e gerenciar os técnicos cadastrados.
 Também apresenta opções para acessar o cadastro e organizar as informações dos profissionais da equipe.
 
 
-![Página de técnicos](prints/tecnicos.jpg)
+![Página de técnicos](prints/tecnicos.png)
 
 ## 7. `editar.html` — Edição de cadastros
 
@@ -141,19 +141,24 @@ As principais funções de uma ordem de serviço são:
 A página reúne os registros das ordens de serviço e permite consultar informações relacionadas aos clientes, equipamentos, técnicos, prazos e status dos serviços.
 
 
-![Ordens de serviço](prints/ordem.jpg.png)
+![Ordens de serviço](prints/os.png)
 
+## 9. `cadastrarOS.html` — Cadastrar ordens de serviço
 
-## 9. `detalhes.html` — Detalhes das ordens de serviço
+Página destinada ao cadastro de ordens de serviço.
+
+![Cadastro Ordem de Serviço](prints/cadastroos.png)
+
+## 10. `detalhes.html` — Detalhes das ordens de serviço
 
 Página destinada à apresentação dos detalhes dos registros relacionados às ordens de serviço.
 
 Seu objetivo é facilitar a consulta das informações dos clientes e dos serviços registrados, reunindo dados que ajudam a compreender cada atendimento.
 
 
-![Detalhes das ordens de serviço](prints/detalhes.jpg.png)
+![Detalhes das ordens de serviço](prints/editaros.png)
 
-## 10. `relatorios.html` — Relatórios do sistema
+## 11. `relatorios.html` — Relatórios do sistema
 
 Página que apresenta um resumo das informações disponíveis no sistema.
 
@@ -162,14 +167,14 @@ Os relatórios ajudam a visualizar os dados relacionados às ordens de serviço,
 
 ![Relatórios do sistema](prints/relatorios.png)
 
-## 11. `sobre.html` — Sobre nós
+## 12. `sobre.html` — Sobre nós
 
 Página destinada à apresentação dos integrantes do grupo e de suas respectivas funções no desenvolvimento do projeto.
 
 Seu objetivo é identificar os participantes e apresentar a contribuição de cada integrante para a construção do SYNTAX.lab.
 
 
-![Página sobre nós](prints/sobre.png)
+![Página sobre nós](prints/sobrenos.png)
 
 # Documentação do back-end — SYNTAX.lab (`server.js`)
 

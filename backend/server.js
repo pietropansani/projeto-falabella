@@ -371,20 +371,6 @@ async function prepararBanco() {
         foto: 'TEXT'
     });
 
-    // Define fotos iniciais padrão para os usuários que ainda não possuírem foto cadastrada
-    await executar(`
-        UPDATE usuarios 
-        SET foto = CASE 
-            WHEN cargo = 'Administrador' THEN 'img/logo-removebg-preview2.png'
-            WHEN lower(nome) LIKE '%pietro%' THEN 'img/pietro.png'
-            WHEN lower(nome) LIKE '%júlia%' OR lower(nome) LIKE '%julia%' THEN 'img/julia.png'
-            WHEN lower(nome) LIKE '%dafny%' THEN 'img/dafny.png'
-            WHEN lower(nome) LIKE '%joão%' OR lower(nome) LIKE '%joao%' THEN 'img/joao.png'
-            ELSE 'img/pietro.png'
-        END
-        WHERE foto IS NULL OR foto = ''
-    `);
-
     // Índice único no RM, ignorando maiúsculas/minúsculas.
     // Impede dois usuários com o mesmo RM. (NULLs são permitidos
     // várias vezes no SQLite.)

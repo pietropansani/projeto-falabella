@@ -669,59 +669,6 @@
     margin: 0;
 }
 
-/* Presets de Avatares Rápidos */
-.um-preset-avatars-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    padding: 0 2px;
-}
-
-.um-preset-avatars-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: #94a3b8;
-}
-
-.um-preset-avatars-list {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.um-preset-avatar-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    padding: 0;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    background: #1e293b;
-    cursor: pointer;
-    overflow: hidden;
-    transition: all 0.15s ease;
-    outline: none;
-    flex-shrink: 0;
-}
-
-.um-preset-avatar-btn img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.um-preset-avatar-btn:hover {
-    border-color: #38bdf8;
-    transform: scale(1.12);
-}
-
-.um-preset-avatar-btn.selected {
-    border-color: #0ea5e9;
-    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.45);
-    transform: scale(1.08);
-}
-
 .um-modal-backdrop.open .um-modal-card {
     transform: scale(1) translateY(0);
 }

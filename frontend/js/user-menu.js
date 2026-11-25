@@ -12,7 +12,7 @@
         nome: 'Pietro Pansani',
         email: 'pietropansani038@gmail.com',
         cargo: 'Back-end',
-        foto: 'img/pietro.png'
+        foto: ''
     };
 
     let listaPerfis = carregarPerfisLocais();
@@ -76,30 +76,12 @@
             const usuario = resultado.usuario;
             sessaoVerificada = true;
 
-            let fotoUsuario = usuario.foto;
-            if (!fotoUsuario) {
-                const nomeLower = (usuario.nome || '').toLowerCase();
-                if (usuario.cargo === 'Administrador') {
-                    fotoUsuario = 'img/logo-removebg-preview2.png';
-                } else if (nomeLower.includes('pietro')) {
-                    fotoUsuario = 'img/pietro.png';
-                } else if (nomeLower.includes('júlia') || nomeLower.includes('julia')) {
-                    fotoUsuario = 'img/julia.png';
-                } else if (nomeLower.includes('dafny')) {
-                    fotoUsuario = 'img/dafny.png';
-                } else if (nomeLower.includes('joão') || nomeLower.includes('joao')) {
-                    fotoUsuario = 'img/joao.png';
-                } else {
-                    fotoUsuario = usuarioAtual.foto || 'img/pietro.png';
-                }
-            }
-
             salvarUsuario({
                 id: String(usuario.id_usuario),
                 nome: usuario.nome,
                 email: usuario.email,
                 cargo: usuario.cargo,
-                foto: fotoUsuario,
+                foto: usuario.foto || '',
                 status: 'Online'
             });
         } catch (e) {
@@ -349,28 +331,6 @@
                             </div>
                         </div>
 
-                        <!-- Opções rápidas de avatares -->
-                        <div class="um-preset-avatars-wrap">
-                            <span class="um-preset-avatars-label">Ou escolha um avatar:</span>
-                            <div class="um-preset-avatars-list">
-                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/pietro.png" title="Pietro">
-                                    <img src="img/pietro.png" alt="Pietro">
-                                </button>
-                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/julia.png" title="Júlia">
-                                    <img src="img/julia.png" alt="Júlia">
-                                </button>
-                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/dafny.png" title="Dafny">
-                                    <img src="img/dafny.png" alt="Dafny">
-                                </button>
-                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/joao.png" title="João">
-                                    <img src="img/joao.png" alt="João">
-                                </button>
-                                <button type="button" class="um-preset-avatar-btn" data-preset-avatar="img/logo-removebg-preview2.png" title="Logo Syntax">
-                                    <img src="img/logo-removebg-preview2.png" alt="Logo">
-                                </button>
-                            </div>
-                        </div>
-
                         <div class="um-form-group">
                             <label class="um-form-label" for="inputNomeUsuario">Nome Completo</label>
                             <input type="text" id="inputNomeUsuario" class="um-form-input" value="${usuarioAtual.nome}" required>
@@ -530,16 +490,6 @@
         }, 2600);
     }
 
-    function destacarPreset(btnElement) {
-        document.querySelectorAll('.um-preset-avatar-btn').forEach(btn => {
-            if (btn === btnElement) {
-                btn.classList.add('selected');
-            } else {
-                btn.classList.remove('selected');
-            }
-        });
-    }
-
     function prepararModalGerenciarConta() {
         fotoSelecionadaParaSalvar = usuarioAtual.foto;
         const pAvatar = document.getElementById('umManageAvatarPreview');
@@ -550,14 +500,6 @@
         if (inNome) inNome.value = usuarioAtual.nome;
         if (inEmail) inEmail.value = usuarioAtual.email;
         if (inCargo) inCargo.value = usuarioAtual.cargo;
-
-        let presetEncontrado = null;
-        document.querySelectorAll('.um-preset-avatar-btn').forEach(btn => {
-            if (btn.getAttribute('data-preset-avatar') === usuarioAtual.foto) {
-                presetEncontrado = btn;
-            }
-        });
-        destacarPreset(presetEncontrado);
     }
 
     function vincularEventos() {
@@ -667,20 +609,6 @@
             });
         }
 
-        document.querySelectorAll('.um-preset-avatar-btn').forEach(btn => {
-            btn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                const preset = this.getAttribute('data-preset-avatar');
-                if (preset) {
-                    fotoSelecionadaParaSalvar = preset;
-                    if (previewImg) previewImg.src = preset;
-                    destacarPreset(this);
-                    mostrarToast('Avatar selecionado!');
-                }
-            });
-        });
-
         if (btnRemoverFoto) {
             btnRemoverFoto.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -688,7 +616,6 @@
                 const nomeAtual = (document.getElementById('inputNomeUsuario')?.value || usuarioAtual.nome);
                 fotoSelecionadaParaSalvar = gerarAvatarSvg(nomeAtual);
                 if (previewImg) previewImg.src = fotoSelecionadaParaSalvar;
-                destacarPreset(null);
                 mostrarToast('Foto redefinida para avatar padrão.');
             });
         }

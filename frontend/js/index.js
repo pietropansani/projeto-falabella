@@ -29,26 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (resultado.usuario) {
                     const u = resultado.usuario;
-                    const nomeLower = (u.nome || '').toLowerCase();
-                    let fotoPadrao = 'img/pietro.png';
-                    if (u.cargo === 'Administrador') {
-                        fotoPadrao = 'img/logo-removebg-preview2.png';
-                    } else if (nomeLower.includes('pietro')) {
-                        fotoPadrao = 'img/pietro.png';
-                    } else if (nomeLower.includes('júlia') || nomeLower.includes('julia')) {
-                        fotoPadrao = 'img/julia.png';
-                    } else if (nomeLower.includes('dafny')) {
-                        fotoPadrao = 'img/dafny.png';
-                    } else if (nomeLower.includes('joão') || nomeLower.includes('joao')) {
-                        fotoPadrao = 'img/joao.png';
-                    }
-
                     localStorage.setItem('syntaxlab_usuario', JSON.stringify({
                         id: u.id_usuario,
                         nome: u.nome,
                         email: u.email,
                         cargo: u.cargo,
-                        foto: u.foto || fotoPadrao,
+                        foto: u.foto || '',
                         status: 'Online'
                     }));
                 }
