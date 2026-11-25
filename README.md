@@ -113,7 +113,13 @@ Página destinada à edição dos dados dos clientes já cadastrados.
 Também permite acessar informações relacionadas aos problemas relatados nos equipamentos e atualizar os dados dos registros, conforme as funcionalidades implementadas no sistema.
 
 
-![Edição de cadastros](prints/cadastrotec.png) 
+![Edição de cadastros](prints/cadastrotec.png)
+
+### Edição de técnicos
+
+Modal utilizado para editar os dados de um técnico já cadastrado (nome completo, e-mail, nova senha opcional, idade, data de nascimento, gênero, nível de conhecimento, experiência, horário para contato e data disponível para iniciar), além de permitir excluir o registro ou salvar as alterações.
+
+![Edição de técnicos](prints/editartec.png)
 
 ## 8. `ordem.html` — Ordens de serviço
 
@@ -789,6 +795,10 @@ Adicione abaixo as capturas de tela das tabelas do banco de dados.
 **Tabela Status**
 
 ![Tabela Status](prints/statusbd.jpg)
+
+Visualização dos registros da tabela `status_os` no banco de dados (`Em andamento`, `Concluída` e `Pendente`):
+
+![Registros da tabela Status](prints/status.jpg)
 
 **Tabela Técnicos**
 
