@@ -108,13 +108,6 @@ Também apresenta opções para acessar o cadastro e organizar as informações 
 
 ## 7. `editar.html` — Edição de cadastros
 
-Página destinada à edição dos dados dos clientes já cadastrados.
-
-Também permite acessar informações relacionadas aos problemas relatados nos equipamentos e atualizar os dados dos registros, conforme as funcionalidades implementadas no sistema.
-
-
-![Edição de cadastros](prints/cadastrotec.png)
-
 ### Edição de técnicos
 
 Modal utilizado para editar os dados de um técnico já cadastrado (nome completo, e-mail, nova senha opcional, idade, data de nascimento, gênero, nível de conhecimento, experiência, horário para contato e data disponível para iniciar), além de permitir excluir o registro ou salvar as alterações.
